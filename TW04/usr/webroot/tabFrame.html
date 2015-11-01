@@ -1,0 +1,100 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="expires" CONTENT="-1">
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<TAG_VARSTART_CHARSET>
+<meta http-equiv="Content-Type" content="text/html; charset={TAG_charset}">
+<TAG_VAREND_CHARSET>
+</HEAD>
+
+
+<script language="JavaScript">
+<!-- Start Script
+<TAG_VARSTART_JS>
+	var logoutConfirm = "{TAG_cf_logoutConfirm}";
+<TAG_VAREND_JS>
+<TAG_VARSTART_ADMIN_BUTTON>
+	var isAdmin = "{TAG_admin_button}";
+<TAG_VAREND_ADMIN_BUTTON>
+<TAG_VARSTART_IS_DISK>
+	var isDisk = "{TAG_isDisk}";
+<TAG_VAREND_IS_DISK>
+
+function init()
+{
+	document.form.logoutConfirm.value = logoutConfirm;
+}
+
+function send(language)
+{
+	document.form.localePreference.value=language ;
+	document.form.username.value=login_user;
+	document.form.submit();
+}
+
+function go_home()
+{
+	top.navFrame.location = "/nav.cgi?foldName=adm&localePreference="+top.tabFrame.document.form.locale.value;
+	top.mainFrame.location = "/cgi/main/main.cgi";
+}
+
+//End Script -->
+<TAG_VARSTART_USERNAME>
+var login_user= "{TAG_username}";
+<TAG_VAREND_USERNAME>
+
+</script>
+
+
+<BODY onLoad="init()" >
+<form name="form" method="post" action="/tabFrameHandler.cgi" onSubmit="">
+
+<TAG_VARSTART_LANGUAGE>
+<input type="hidden" name="locale" value="{TAG_locale}">
+<TAG_VAREND_LANGUAGE>
+
+
+<input type="hidden" name="localePreference" >
+<input type="hidden" name="username" >
+
+<a href="/tabFrame.cgi"><img style="border: none;" src="/image/Masthead.png" width="800" height="97" border=0 onClick='go_home()'></a>
+<script language="javascript">
+with(document)
+{
+	write('<table width="800" border="0" cellspacing="0" cellpadding="0">');
+	write('<tr>');
+	write('<td width=13>&nbsp;</td>');
+	write('<td width=50 style="background-image: url(/image/tab_bg1.gif); repeat-x">&nbsp;</td>');
+	write('<td width=100% style="background-image: url(/image/tab_bg1.gif); repeat-x">&nbsp;</td>');
+	write('<td width=13>&nbsp;</td>');
+ 	write('</tr>');
+}
+</script>
+</table>
+<input type="hidden" name="logoutConfirm">
+</form>
+
+</body>
+
+
+<Script language="javascript">
+	var tmpImgSrc = null;
+	var tmpImgObj = null;
+	function deleteCookie()
+	{
+		document.cookie = "LoginUser=nobady";
+		return true;
+	}
+
+	function logout()
+	{
+		if (confirm(document.form.logoutConfirm.value))
+		{
+			deleteCookie();
+			top.window.location.href = "index.html";
+		}
+	}
+</Script>
+
+
+</html>

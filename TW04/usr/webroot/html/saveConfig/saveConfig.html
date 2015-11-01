@@ -1,0 +1,52 @@
+<html>
+
+<head>
+<TAG_VARSTART_CHARSET>
+<meta http-equiv="Content-Type" content="text/html; charset={TAG_charset}">
+<TAG_VAREND_CHARSET>
+<title>Save Configuration</title>
+<link rel="StyleSheet" type="text/css" href="/css/storlib.css">
+</head>
+
+
+<script language="JavaScript" type="text/javascript" src="/javascript/storlib.js"></script>
+
+<script language="javascript">
+<!-- Start Script
+
+<TAG_VARSTART_FLAG>
+var flag = {TAG_flag};
+<TAG_VAREND_FLAG>
+
+function send()
+{
+	document.location.href="/config.tar";
+}
+function downLoad()
+{
+	if (flag)
+	{
+		setTimeout("send()",100);
+		return true;
+	}
+}
+
+
+//End Script -->
+</script>
+
+
+<body onLoad="get_cookie();downLoad();">
+<form name="form" method="post" action="/cgi/saveConfig/saveConfigHandler.cgi">
+
+<table border="0" width="550" cellspacing="0" cellpadding="2">
+<TAG_VARSTART_SAVECONFIG>
+<tr><td class="TITLE">{TAG_ft_saveConfig}</td></tr>
+<tr><td class="CONTENT">{TAG_ft_desc1}{TAG_ft_desc2}</td></tr>
+<tr><td align="center"><input class="button" type="button" value="{TAG_bt_save}"  onclick="document.form.submit();">
+ </td>	</tr>
+</table>
+<TAG_VAREND_SAVECONFIG>
+</form>
+</body>
+</html>

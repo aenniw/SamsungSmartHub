@@ -1,0 +1,24 @@
+<class name="User" namespace="" version="1.0">
+  <property name="enabled" type="boolean" default="1"/>
+  <property name="name" type="accountname"/>
+  <property  name="systemAdministrator" type="boolean" default="0" />
+  <property name="password" type="password" optional="true"/> 
+  <property name="crypt_password" type="scalar" optional="true"/> 
+  <property name="smb_password" type="scalar" optional="true"/> 
+  <property name="localePreference" type="scalar" default="browser"/>
+  <property name="description" type="scalar" optional="true"/>
+  <property name="shell" type="scalar" optional="true"/>
+  <property name="uid" type="int"/>
+  <property name="gid" type="int"/>
+  <property name="homeDir" type="scalar" optional="true"/>
+  <property name="descRO" type="boolean" default="0"/>
+  <property name="dontDelete" type="boolean" optional="true" default="0"/>
+  <property name="createDir" type="boolean" default="0"/>
+</class>
+
+<class name="System" namespace="UserDefaults" version="1.0">
+  <property name="quota" type="int" default="-1"/>
+  <property name="description" type="scalar" default=""/>
+  <property name="maxUsers" type="int" default="100"/>
+</class>
+

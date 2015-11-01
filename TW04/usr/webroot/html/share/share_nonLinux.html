@@ -1,0 +1,109 @@
+<html>
+
+<head>
+<TAG_VARSTART_CHARSET>
+<meta http-equiv="Content-Type" content="text/html; charset={TAG_charset}">
+<TAG_VAREND_CHARSET>
+<title>Windows, FTP Access</title>
+<link rel="StyleSheet" type="text/css" href="/css/storlib.css">
+</head>
+
+
+<script language="JavaScript" type="text/javascript" src="/javascript/storlib.js"></script>
+<script language="JavaScript" type="text/javascript">
+<!-- Start Script
+<TAG_VARSTART_ISFTP>             
+var is_ftp = {TAG_isftp};
+<TAG_VAREND_ISFTP>             
+
+//End Script -->
+</script>
+
+
+<body onLoad="get_cookie();">
+<form name="form" method="post" action="/cgi/share/share_nonLinuxHandler.cgi" onSubmit="">
+
+<table border="0" width="700" cellspacing="0" cellpadding="2">
+<tr>
+<TAG_VARSTART_NAME>
+<script language="javascript">
+if (is_ftp)
+	document.write("<td colspan=\"3\" class=\"TITLE\">{TAG_ft_nonLunuxSetting} - {TAG_name}</td>");
+else
+	document.write("<td colspan=\"3\" class=\"TITLE\">{TAG_ft_noFtpSetting} - {TAG_name}</td>");
+</script>
+<TAG_VAREND_NAME>
+</tr>
+<tr><td colspan="3" class="CONTENT2">
+<TAG_VARSTART_ALLOWFORALL>
+	<input type="checkbox" name="allowForAll" value="1" {TAG_allowForAll}>{TAG_ft_allowForAll}</td>
+<TAG_VAREND_ALLOWFORALL>
+</tr>
+<tr>
+<TAG_VARSTART_ALLOWNA>
+		<td class="HEAD1" width="250">{TAG_ft_allow}</td>
+	   	<td width="130">&nbsp;</td>
+		<td class="HEAD1">{TAG_ft_noAccess}</td>
+<TAG_VAREND_ALLOWNA>
+</tr>
+<tr align="center"><td rowspan="4" >
+		<select size="6" name="allowed" multiple>
+<TAG_LOOPSTART_ALLOWED>
+		{TAG_allowed}
+<TAG_LOOPEND_ALLOWED>
+		</select></td>
+<TAG_VARSTART_BT>
+	<td><input class="button" style="width:110px" type="button" name="Read Only" value="&lt;&lt;&nbsp;{TAG_bt_ro}" onclick="share_AddItem(document, this.name)"></td>
+<TAG_VAREND_BT>
+	<td rowspan="4">
+		<select size="6" name="noaccess" multiple>
+<TAG_LOOPSTART_NOACCESS>
+		{TAG_noaccess}
+<TAG_LOOPEND_NOACCESS>
+		</select></td>
+</tr>
+<TAG_VARSTART_BUTTON>
+<tr align="center"><td><input class="button" style="width:110px" type="button" name="Writable" value="&lt;&lt;&nbsp;{TAG_bt_rw}" onclick="share_AddItem(document, this.name)">
+	</td>
+</tr>
+<tr><td>&nbsp;</td></tr>
+<tr align="center">
+	<td><input class="button" type="button" style="width:110px" value="{TAG_bt_remove}&nbsp;&gt;&gt;" onclick="share_RemoveItem(document)"></td>
+</tr>
+<tr><td colspan="3" class="CONTENT2">{TAG_ft_groupSign}</td></tr>
+<tr><td colspan="3" align="center"><input class="button" type="button" value="{TAG_bt_save}" onClick="checkValue()">
+		&nbsp;
+		<input class="button" type="button" value="{TAG_bt_cancel}" onClick="back()">
+	</td>
+</tr>
+<TAG_VAREND_BUTTON>
+</table>
+<TAG_VARSTART_SHARENAME>
+<input type="hidden" name="sharename" value="{TAG_sharename}">
+<TAG_VAREND_SHARENAME>
+<input type="hidden" name="allowRWUsers" value="">
+<input type="hidden" name="allowROUsers" value="">
+<input type="hidden" name="allowRWGroups" value="">
+<input type="hidden" name="allowROGroups" value="">
+</form>
+</body>
+
+
+<script language="JavaScript" type="text/javascript">
+<!-- Start Script
+
+function checkValue()
+{
+	share_multiSelectSubmitHandler(document);
+	document.form.submit();
+}
+
+function back()
+{
+	var target = "/cgi/share/share.cgi";
+	gotoUrl(target);
+}
+
+//End Script -->
+</script>
+</html>

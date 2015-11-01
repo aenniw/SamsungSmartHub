@@ -1,0 +1,214 @@
+#!/bin/sh -
+
+HOME=/
+PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/hddapp/bin:/usr/hddapp/sbin:/usr/local/bin:/usr/local/sbin
+export HOME PATH
+
+. /etc/rc.conf
+
+# Start up swapping.
+##echo "Activating swap partitions ..." 
+##swapon -a 
+
+echo "Checking and Mounting filesystem(s) ..."
+
+MOUNT_IDE1=/mnt/ide1
+MOUNT_IDE2=/mnt/ide2
+MOUNT_IDE3=/mnt/ide3
+MOUNT_IDE4=/mnt/ide4
+MOUNT_USB1=/mnt/usb1
+MOUNT_USB2=/mnt/usb2
+MOUNT_USB3=/mnt/usb3
+MOUNT_USB4=/mnt/usb4
+#
+#
+##debug_Aaron on 10/29/2007, for SATA RAID
+if [ -e /lib/modules/sata0_storlink.ko ]; then
+        insmod /lib/modules/sata0_storlink.ko
+fi
+if [ -e /lib/modules/sata1_storlink.ko ]; then
+        insmod /lib/modules/sata1_storlink.ko
+fi
+if [ -e /lib/modules/ufsd.ko ]; then
+	insmod /lib/modules/ufsd.ko
+fi
+
+echo 'DEVICE /dev/hd*[0-9] /dev/sd*[0-9]' > /etc/mdadm.conf
+mdadm  --examine  --scan >> /etc/mdadm.conf
+mdadm --assemble --scan
+
+##
+##debug_Aaron on 09/09/2005, support hard disk boot up
+##
+mkdir -p /tmp
+mounted_device=""
+swap_device=/dev/sda4
+system_device=/dev/md0
+data_device=/dev/md1
+
+##df
+##/sbin/e2fsck -y -f -v $system_device
+
+##debug_Aaron on 09/21/2005, mount the necessary partitions
+mkdir -p  /system
+echo "mount -t ext3 $system_device /system"
+mount -t ext3 $system_device /system
+if [ $? != 0 ]; then
+     echo "mount $system_device to /system failed!!!"	
+     exit -1
+fi 
+
+##mkdir -p  /mnt/hda5	
+##echo "mount -t auto /dev/hda5 /mnt/hda5"
+##mount -t auto /dev/hda5 /mnt/hda5
+##if [ $? != 0 ]; then
+##     echo "mount /dev/hda5 to /mnt/hda5 failed!!!"
+##     exit -1
+##fi 
+
+mkdir -p  /mnt/md1     
+echo "mount -t ufsd -o umask=0000 $data_device /mnt/md1"
+mount -t ufsd -o umask=0000 $data_device /mnt/md1
+if [ $? != 0 ]; then
+     echo "mount $data_device to /mnt/md1 failed!!!"
+     exit -1
+fi 
+##if [ -f "/mnt/ide1/aquota.user" -a -f "/mnt/ide1/aquota.group" ]; then
+##                DoQuotaCheck=0
+##         else   
+##                DoQuotaCheck=1
+##         fi
+
+##         if [ $DoQuotaCheck -eq 1 ]; then
+##                echo "Quotacheck on $MOUNT_DIR."
+##                /usr/hddapp/sbin/quotacheck -c -g -u -F vfsv0 /mnt/ide1 
+##         fi
+
+##         echo "Quotaon on /mnt/ide1."
+##         /usr/hddapp/sbin/quotaon -F vfsv0 /mnt/ide1
+echo "$data_device" > /tmp/mount.point
+echo "/mnt/md1" >> /tmp/mount.point
+
+dd if=$swap_device of=/tmp/out count=1 2>/dev/null
+if [ $? = 0 ]; then
+        echo "Found swap device at $swap_device" 
+
+	##debug_Aaron on 09/21/2005, if swap exists in /dev/fstab already, do not add again
+	grep "swap" /etc/fstab
+	if [ $? != 0 ]; then
+        	echo "$swap_device  swap    swap defaults        0 0" >> /etc/fstab
+	fi
+else
+	echo "Warning: No swap device is found..."
+fi
+
+##debug_Aaron on 06/16/2005, support /dev/loop
+if [ -e /lib/modules/loop.o ]; then
+	insmod /lib/modules/loop.o
+fi
+
+##debug_Aaron on 01/12/2005, support USB 2.0
+if [ -e /lib/modules/ehci-hcd.o ]; then
+        insmod /lib/modules/ehci-hcd.o
+        sleep 5
+fi
+if [  -e /lib/modules/usb-ohci.o ]; then
+        insmod /lib/modules/usb-ohci.o
+        sleep 5
+fi
+if [  -e /lib/modules/usb-uhci.o ]; then
+        insmod /lib/modules/usb-uhci.o
+        sleep 5
+fi                        
+
+
+MOUNT_DIR=MOUNT_usb1
+
+FAT32_ID1="kdosfs"
+FAT32_ID2="SDOS5.0"
+FAT32_ID3="FAT16"
+NTFS_ID1="TFS"
+ret_val1=0
+ret_val2=0
+ret_val3=0
+ret_val4=0
+for device in /dev/sda1 /dev/sdb1 /dev/sdc1 /dev/sdd1
+do
+	echo "Check whether device $device exist or not..."
+       	dd if=$device of=/tmp/out.fat32 count=1 2>/dev/null
+	if [ $? != 0 ]; then   
+	    continue
+	fi
+
+  	grep $NTFS_ID1 /tmp/out.fat32
+        ret_val4=$?
+                
+        if [ $ret_val1 = 0 -o $ret_val2 = 0 -o $ret_val3 = 0 ]; then
+              echo "$device is FAT32"
+                        
+              ##debug_Aaron
+              ##echo "check filesystem..........."
+              ##dosfsck -a $device
+
+	      ##debug_Aaron on 09/28/2005, for linux 2.6
+              uname -r | grep "2.6"
+              if [ $? ]; then
+                       mount -t msdos -o umask=0000 $device $MOUNT_DIR
+              else
+              		mount -t vfat -o umask=0000,iocharset=utf8 $device $MOUNT_DIR
+	      fi
+        elif [ $ret_val4 = 0 ]; then
+              echo "$device is NTFS"
+              mount -t ntfs -o umask=0000,nls=utf8 $device $MOUNT_DIR
+        else            
+              echo "$device is not FAT32"
+                        
+              ##debug_Aaron
+              ##echo "check filesystem..........."
+              ##e2fsck -p $device
+
+              ##debug_Aaron on 05/19/2005, do not do quota check
+              ##mount -t auto -o usrquota,grpquota $device $MOUNT_DIR
+              mount -t auto $device $MOUNT_DIR
+        fi
+
+        if [ $? != 0 ]; then
+		continue
+	fi
+
+	 
+	mkdir -p $MOUNT_DIR
+	mkdir -p $MOUNT_DIR/shares	
+	mkdir -p $MOUNT_DIR/shares/public
+        chmod -R 777 $MOUNT_DIR/shares	
+
+        if [ -f "$MOUNT_DIR/aquota.user" -a -f "$MOUNT_DIR/aquota.group" ]; then
+               DoQuotaCheck=0
+        else    
+               DoQuotaCheck=1
+        fi
+
+        if [ $DoQuotaCheck -eq 1 ]; then
+               echo "Quotacheck on $MOUNT_DIR."
+               /usr/hddapp/sbin/quotacheck -c -g -u -F vfsv0 $MOUNT_DIR
+        fi
+
+        echo "Quotaon on $MOUNT_DIR."
+        /usr/hddapp/sbin/quotaon -F vfsv0 $MOUNT_DIR
+done
+
+#start up swapping.
+echo "Activating swap partitions ..."
+
+##debug_Aaron on 01/09/2007, if there is no /system/codb then  copy /usr/sausalito/codb to there
+if [ -d /system/codb ]; then
+	echo "/system/codb exists already..." 
+	
+else
+	echo "Move CODB to /system/..."
+	mv /usr/sausalito/codb/ /system/
+fi
+rm -rf /usr/sausalito/codb/
+ln -sf /system/codb /usr/sausalito/codb
+
+swapon -a

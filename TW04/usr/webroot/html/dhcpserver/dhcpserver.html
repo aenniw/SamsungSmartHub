@@ -1,0 +1,403 @@
+<html>
+
+<head>
+<TAG_VARSTART_CHARSET>
+<meta http-equiv="Content-Type" content="text/html; charset={TAG_charset}">
+<TAG_VAREND_CHARSET>
+<title>Dhcp Server Setting</title>
+<link rel="StyleSheet" type="text/css" href="/css/storlib.css">
+</head>
+
+<script language="JavaScript" type="text/javascript" src="/javascript/storlib.js"></script>
+<script language="JavaScript" type="text/javascript">
+<!--
+<TAG_VARSTART_JS>
+function checkIpStr(Ipstring)
+{
+	var ip ;
+	var msg="";
+		
+	ip = Ipstring.split(".");
+	if(ip.length<4 || ip.length>4)
+	{
+		msg ="{TAG_ft_errformat} !!";
+		return msg;
+	}
+	for(i=0;i<4 ;i++)
+	{
+		if(isNaN(ip[i]))
+		{
+			msg = "IP"+(i+1)+" {TAG_ft_errnumeral} !!";
+			return msg; 
+		}
+		if (ip[i]>255 || ip[i]<0 )
+		{
+			msg = "IP"+(i+1)+" {TAG_ft_errrange} !!";
+			return msg;
+		}
+	}
+	return msg;
+}
+
+var netIPstring = "{TAG_net_ip}";
+var maskstring = "{TAG_net_mask}";
+var isdhcpclient = "{TAG_is_dhcpclient}" ;
+
+function illegal_IpStr(Ipstring)
+{
+	var ip ;
+	var msg= "";
+	var net ;
+	var mask;
+	var isTrueIP = false;
+		
+	ip = Ipstring.split(".");
+	net = netIPstring.split("."); 
+	
+	
+	if (document.form.netmask.value == "")
+		mask = maskstring.split("."); 
+	else
+	{
+		var s1 =document.form.netmask.value;
+		mask =s1.split(".");
+	}
+	isTrueIP = isTheSameIpRange(net, mask, ip)
+	
+	if(!isTrueIP)
+	{
+		msg = "{TAG_ft_errIprange}";
+	}
+	return msg;
+}
+
+function isTheSameMaskRange(ipaddrArray, maskArray, checkMaskArray)
+{
+	var theSameRange=true;
+
+	for (i=0; i<4; i++) {
+	    if( (ipaddrArray[i] & maskArray[i]) != (ipaddrArray[i] & checkMaskArray[i] ) )
+		theSameRange = false;
+	}
+	
+	return(theSameRange);
+
+}
+
+function mask_is_same_subnet_to_lan(Maskstring)
+{
+	var msg= "";
+	var ckmask;
+	var net;
+	var mask;
+	var isTrueMask=false;
+		
+	ckmask = Maskstring.split(".");
+	net = netIPstring.split("."); 
+	mask = maskstring.split("."); 
+	
+	//check is the same subnet to lan ip
+	isTrueMask = isTheSameMaskRange(net, mask, ckmask)
+	
+
+	if(!isTrueMask)
+	{
+		msg = "{TAG_ft_errIprange}";
+	}
+	return msg;
+}
+
+
+function isMask(Ipstring)
+{
+	var mask ;
+	var isTrueMask = false;
+	var msg="";
+	
+	mask = Ipstring.split(".");
+	isTrueMask = isSubnetMask(mask);
+	if(!isTrueMask)
+	{
+		msg = "{TAG_ft_errsubnetformat}";
+	}
+	return msg;
+}
+
+function ViewlayerPop(){
+	document.getElementById("layerPop").style.display='inline'
+}
+
+function checkValue()
+{
+	var msg ;
+	if (document.form.enable.checked == true)
+	{
+		if(isdhcpclient == "dhcp")
+		{
+			alert("{TAG_ft_err_enabled}!!");
+			return false;
+		}
+		if(isBlank(document.form.startip.value))
+		{
+			alert("{TAG_ft_errsnull}!!");
+			return false;
+		}
+		if(isBlank(document.form.endip.value))
+		{
+			alert("{TAG_ft_errenull}!!");
+			return false;
+		}
+	}
+	
+	if (!isBlank(document.form.netmask.value))
+	{
+		msg = checkIpStr(document.form.netmask.value);
+		if (msg.length>0)
+		{
+			alert("{TAG_ft_errsubnet} :"+msg+" ");
+			return false;
+		}
+		msg = isMask(document.form.netmask.value);
+		if (msg.length>0)
+		{
+			alert(msg);
+			return false;
+		}
+		msg = mask_is_same_subnet_to_lan(document.form.netmask.value);
+		if (msg.length>0)
+		{
+			alert("{TAG_ft_errsubnet} :"+msg+" ");
+			return false;
+		}
+	}
+	if (!isBlank(document.form.gateway.value))
+	{
+		msg = checkIpStr(document.form.gateway.value);
+		if (msg.length>0)
+		{
+			alert("{TAG_ft_errgate} :"+msg+" ");
+			return false;
+		}
+		msg = illegal_IpStr(document.form.gateway.value);
+		if (msg.length>0)
+		{
+			alert("{TAG_ft_errgate} :"+msg+" ");
+			return false;
+		}
+	}
+	if (!isBlank(document.form.dns1.value))
+	{
+		msg = checkIpStr(document.form.dns1.value);
+		if (msg.length>0)
+		{
+			alert("{TAG_ft_errdns} :"+msg+" ");
+			return false;
+		}
+	}
+	if (!isBlank(document.form.dns2.value))
+	{
+		msg = checkIpStr(document.form.dns2.value);
+		if (msg.length>0)
+		{
+			alert("{TAG_ft_errdns} :"+msg+" ");
+			return false;
+		}
+	}
+	if (!isBlank(document.form.startip.value))
+	{
+		msg = checkIpStr(document.form.startip.value);
+		if (msg.length>0)
+		{
+			alert("{TAG_ft_errsip} :"+msg+" ");
+			return false;
+		}
+		msg = illegal_IpStr(document.form.startip.value);
+		if (msg.length>0)
+		{
+			alert("{TAG_ft_errsip} :"+msg+" ");
+			return false;
+		}
+	}
+	if (!isBlank(document.form.endip.value))
+	{
+		msg = checkIpStr(document.form.endip.value);
+		if (msg.length>0)
+		{
+			alert("{TAG_ft_erreip} :"+msg+" ");
+			return false;
+		}
+		msg = illegal_IpStr(document.form.endip.value);
+		if (msg.length>0)
+		{
+			alert("{TAG_ft_erreip} :"+msg+" ");
+			return false;
+		}
+	}
+	if (!isBlank(document.form.startip.value) && !isBlank(document.form.endip.value))
+	{
+		var ips ,ipe ,ips_new , ipe_new;
+		var lo,hi;
+		ips = document.form.startip.value;
+		ipe = document.form.endip.value;
+		ips_new = ips.split(".");
+		ipe_new = ipe.split(".");
+		lo = parseInt(ips_new[3]);
+		hi = parseInt(ipe_new[3]);
+		if (lo > hi)
+		{
+			alert ("{TAG_ft_errlarge}");
+			return false;
+		}
+	}
+	
+	if (confirm("{TAG_cf_message}"))
+	{
+		ViewlayerPop();
+		document.form.submit();
+		return true;
+	}
+
+}
+function goto_list()
+{
+	var target = "/cgi/dhcpserver/dhcplease.cgi";
+	gotoUrl(target);
+}
+
+function goto_static()
+{
+	var target = "/cgi/dhcpserver/dhcpstatic.cgi";
+	gotoUrl(target);
+}
+
+function show_system_error_message()
+{
+	var message = "{TAG_err_msg}";
+
+	if (message != "")
+	{
+		alert(message);
+	}
+}
+
+var lease_time = {TAG_lease};
+
+function init()
+{
+	document.form.lease.selectedIndex = lease_time;
+	document.form.enable.disabled = true;
+	return true;
+}
+<TAG_VAREND_JS>
+//-->
+</script>
+
+<body onLoad="get_cookie();show_system_error_message();init();">
+<FORM name="form" method="post" action="/cgi/dhcpserver/dhcpserverHandler.cgi" >
+<!--layerpopup Div-->
+<TAG_VARSTART_WAIT>
+<Div id="layerPop" style="position:absolute; left:30px; top:320px; width:300px; height:40px; z-index:0;display:none;">
+<tr>
+<lign="center" valign="middle">
+<table bgcolor="#FFFFFF" bordercolor="00A5FF" cellpadding="10" cellspacing="1" border="1" width="400" height="30">
+<tr>
+<td align="center">
+<font size="4" color="#0064CD">{TAG_ft_wait}</font><br><br>
+<marquee direction="right" width="400" height="1" scrollamount="30">
+<img src="/image/01_bar_on.png" width="100" height="5">
+</marquee>
+</table>
+</td></tr>
+</table>
+</td></tr>
+</table>
+</center>
+</Div>
+<TAG_VAREND_WAIT>
+<!-- //layerpopup div end-->
+
+<table border="0" width="550" cellspacing="0" cellpadding="2">
+<tr>
+<TAG_VARSTART_SETTING>
+	<td class="TITLE" colspan="2">{TAG_ft_setting}</td>
+<TAG_VAREND_SETTING>
+</tr>
+<tr>
+<TAG_VARSTART_SERVER>
+	<td class="HEAD">{TAG_ft_server}</td>
+<TAG_VAREND_SERVER>
+<TAG_VARSTART_ENABLE>
+	<td class="CONTENT"><input type="checkbox" name="enable" value="1" {TAG_enable}></td>
+<TAG_VAREND_ENABLE>
+</tr>
+<tr>
+<TAG_VARSTART_SUBNETMASK>	
+	<td class="HEAD">{TAG_ft_subnetmask}</td>
+<TAG_VAREND_SUBNETMASK>
+<TAG_VARSTART_MASKIP>
+	<td class="CONTENT"><input type="text" name="netmask" value="{TAG_maskip}"></td>
+<TAG_VAREND_MASKIP>			
+</tr>
+<tr>
+<TAG_VARSTART_GATEWAY>	
+	<td class="HEAD">{TAG_ft_gateway}</td>
+<TAG_VAREND_GATEWAY>
+<TAG_VARSTART_GWIP>
+	<td class="CONTENT"><input type="text" name="gateway" value="{TAG_gwip}"></td>
+<TAG_VAREND_GWIP>			
+</tr>
+<tr>
+<TAG_VARSTART_DNS1>	
+	<td class="HEAD">{TAG_ft_dns1}</td>
+	<td class="CONTENT"><input type="text" name="dns1" value="{TAG_dnsip1}"></td>
+<TAG_VAREND_DNS1>
+</tr>
+<tr>
+<TAG_VARSTART_DNS2>	
+	<td class="HEAD">{TAG_ft_dns2}</td>
+	<td class="CONTENT"><input type="text" name="dns2" value="{TAG_dnsip2}"></td>
+<TAG_VAREND_DNS2>
+</tr>
+<tr>
+<TAG_VARSTART_DHCPSTART>	
+	<td class="HEAD">{TAG_ft_dhcpStart}</td>
+<TAG_VAREND_DHCPSTART>
+<TAG_VARSTART_IPSTART>
+	<td class="CONTENT"><input type="text" name="startip" value="{TAG_ipstart}"></td>
+<TAG_VAREND_IPSTART>			
+</tr>
+<tr>
+<TAG_VARSTART_DHCPEND>	
+	<td class="HEAD">{TAG_ft_dhcpEnd}</td>
+<TAG_VAREND_DHCPEND>
+<TAG_VARSTART_IPEND>
+	<td class="CONTENT"><input type="text" name="endip" value="{TAG_ipend}"></td>
+<TAG_VAREND_IPEND>			
+</tr>
+<tr>
+<TAG_VARSTART_TIME>	
+	<td class="HEAD">{TAG_ft_time}</td>
+<TAG_VAREND_TIME>
+	<td class="CONTENT"><select size="1" name="lease">
+		<option value="0">1 hour</option>
+		<option value="1">4 hours</option>
+		<option value="2">8 housr</option>
+		<option value="3">12 hours</option>
+		<option value="4">1 day</option>
+		<option value="5">2 days</option>
+		<option value="6">3 days</option>
+		<option value="7">1 week</option>
+		</select></td>
+</tr>
+<tr>
+	<td colspan="2">
+<TAG_VARSTART_BUTTON>
+		<p align="center"><input class="button" type="button" name="save" value="{TAG_bt_save}" style="width: 60px" onClick="checkValue()">
+			&nbsp;<input class="button" type="button" name="list" value="{TAG_bt_list}" style="width: 120px" onClick="goto_list()">
+			&nbsp;<input class="button" type="button" name="static" value="{TAG_bt_staticip}" style="width: 120px" onClick="goto_static()">
+<TAG_VAREND_BUTTON>
+</td></tr>
+</table>
+</form>
+</body>
+</html>

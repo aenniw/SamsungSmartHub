@@ -1,0 +1,107 @@
+#!/bin/sh -
+
+HOME=/
+PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/hddapp/bin:/usr/hddapp/sbin:/usr/local/bin:/usr/local/sbin
+export HOME PATH
+
+. /etc/rc.conf
+
+mkdir -p /tmp
+mounted_device=""
+
+##debug_Aaron on 01/12/2005, support USB 2.0
+if [ -e /lib/modules/ehci-hcd.o -a  -e /lib/modules/usb-uhci.o ]; then
+        insmod /lib/modules/ehci-hcd.o
+	sleep 10
+        insmod /lib/modules/usb-uhci.o
+	sleep 5 
+else
+	exit 0
+fi
+
+
+FAT32_ID1="kdosfs"
+FAT32_ID2="SDOS5.0"
+MOUNT_DIR=""
+ret_val=0
+ret_val1=0
+ret_val2=0
+num=2
+
+##debug_Aaron on 10/14/2004, change file system type to auto (11/05/2004)
+##            on 11/12/2004, mount according to file system type
+for device in /dev/sda1 /dev/sdb1
+do
+        mkdir -p /volume$num
+
+        MOUNT_DIR=/volume$num
+
+ 	dd if=$device of=/tmp/out.fat32 count=1
+        grep $FAT32_ID1 /tmp/out.fat32
+        ret_val1=$?
+        grep $FAT32_ID2 /tmp/out.fat32
+        ret_val2=$?
+        if [ $ret_val1 = 0 -o $ret_val2 = 0 ]; then
+              echo "$device is FAT32"
+              mount -t vfat -o umask=000 $device $MOUNT_DIR
+        else
+              echo "$device is not FAT32"
+              mount -t auto -o usrquota,grpquota $device $MOUNT_DIR
+        fi
+        if [ $? != 0 ]; then
+	      echo "mount $device failed !!!"
+              continue
+        fi
+
+        ret_val=$?
+        if [ -e $MOUNT_DIR/ImageInfo ]; then
+                umount $MOUNT_DIR
+		case $device in
+             		/dev/hda1)
+                     		device=/dev/hda2
+                     		;;
+        		/dev/hdc1)
+                     		device=/dev/hdc2
+                     		;;
+        		/dev/sda1)
+                     		device=/dev/sda2
+                	     	;;
+        		/dev/sdb1)
+                     		device=/dev/sdb2
+                     	;;
+        	esac
+
+ 		dd if=$device of=/tmp/out.fat32 count=1
+                grep $FAT32_ID1 /tmp/out.fat32
+                ret_val1=$?
+                grep $FAT32_ID2 /tmp/out.fat32
+                ret_val2=$?
+                if [ $ret_val1 = 0 -o $ret_val2 = 0 ]; then
+                	echo "$device is FAT32"
+                	mount -t vfat -o umask=000 $device /volume$num
+        	else
+                	echo "$device is not FAT32"
+                	mount -t auto -o usrquota,grpquota $device /volume$num
+        	fi
+        	ret_val=$?
+	fi
+	echo "ret_val=$ret_val"
+ 	if [ $ret_val = 0 ]; then
+                num=`expr $num + 1`
+                echo "volume$num"
+
+		if [ -f "$MOUNT_DIR/aquota.user" -a -f "$MOUNT_DIR/aquota.group" ]; then
+                        DoQuotaCheck=0
+                 else
+                        DoQuotaCheck=1
+                 fi
+
+                 if [ $DoQuotaCheck -eq 1 ]; then
+                         echo "Quotacheck on $MOUNT_DIR."
+                         /usr/hddapp/sbin/quotacheck -c -g -u -F vfsv0 $MOUNT_DIR
+                 fi
+
+                 echo "Quotaon on $MOUNT_DIR."
+                 /usr/hddapp/sbin/quotaon -F vfsv0 $MOUNT_DIR
+        fi
+done

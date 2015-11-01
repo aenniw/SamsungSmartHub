@@ -1,0 +1,70 @@
+
+
+<dlna-import>
+   <containerlist>	
+
+    <container>
+      <containerID>Container:Import.Access</containerID>
+      <icon>http://www.access-company.com/youtube.jpg</icon>
+      <parentID>Container:Import</parentID>
+      <title>Access</title>
+    </container>
+
+   <container>
+      <containerID>Container:Import.Access.WebCams</containerID>
+      <parentID>Container:Import.Access</parentID>
+      <title>WebCams</title>
+    </container>
+
+  </containerlist>
+
+  <imagelist>
+    <item>
+      <parentID>Container:Import.Access</parentID>
+ 	<res size="10303" resolution="540x859" protocolInfo="http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_LRG;DLNA.ORG_OP=01;DLNA.ORG_CI=0">http://212.110.124.83:80/standard/EBL-EZFront/content/download/100k.jpg</res>
+ 	<title>url 100k jpg</title>
+      <album>Images</album>
+      <date>2006-12-03T10:00:00</date>
+      <creator>unknown</creator>
+      <upnp_class>object.item.imageItem</upnp_class>
+      <restricted>1</restricted>
+      <artist>unknown</artist>
+      <genre>Images</genre>
+    </item>
+  </imagelist>
+
+  <videolist>
+   <item>
+      <parentID>Container:Import.Access.WebCams</parentID>
+ 	<res size="11057152" resolution="352x576" bitrate="1153600" duration="0:00:19:210" protocolInfo="http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_PS_PAL;DLNA.ORG_OP=01;DLNA.ORG_CI=0">
+mms://rembrandt.terena.nl/stream2</res>
+	<title>Amsterdam webcam</title>
+      <album>webcam</album>
+      <date>2008-12-03T10:00:00</date>
+      <creator>webcam</creator>
+      <upnp_class>object.item.videoItem</upnp_class>
+      <restricted>1</restricted>
+      <artist>public</artist>
+      <genre>webcam</genre>
+    </item>
+
+   <item>
+      <parentID>Container:Import.Access.WebCams</parentID>
+ 	<res size="11057152" resolution="352x576" bitrate="1153600" duration="0:00:19:210" protocolInfo="http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_PS_PAL;DLNA.ORG_OP=01;DLNA.ORG_CI=0">http://www.nasdaq.com/about/marketsitetowervideo.asx</res>
+	<title>Nasdaq webcam</title>
+      <album>webcam</album>
+      <date>2008-12-03T10:00:00</date>
+      <creator>public</creator>
+      <upnp_class>object.item.videoItem</upnp_class>
+      <restricted>1</restricted>
+      <artist>public</artist>
+      <genre>webcam</genre>
+    </item>
+
+   </videolist>
+
+ <audiolist>
+  </audiolist>
+
+
+</dlna-import>

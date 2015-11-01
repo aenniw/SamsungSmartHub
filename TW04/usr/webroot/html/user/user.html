@@ -1,0 +1,369 @@
+<html>
+
+<head>
+<TAG_VARSTART_CHARSET>
+<meta http-equiv="Content-Type" content="text/html; charset={TAG_charset}">
+<TAG_VAREND_CHARSET>
+<title>User Management</title>
+<link rel="StyleSheet" type="text/css" href="/css/storlib.css">
+</head>
+
+<script language="JavaScript" type="text/javascript" src="/javascript/storlib.js"></script>
+<script language="JavaScript" type="text/javascript">
+<!-- Start Script
+
+
+<TAG_VARSTART_DISKTYPE>
+var disk_type = "{TAG_disktype}"
+<TAG_VAREND_DISKTYPE>
+
+<TAG_VARSTART_DISKCRYPT>
+var disk_crypt = "{TAG_diskcrypt}"
+<TAG_VAREND_DISKCRYPT>
+
+<TAG_VARSTART_DISKSIZE>
+var disk_size = {TAG_disksize}
+<TAG_VAREND_DISKSIZE>
+
+<TAG_VARSTART_QUOTA>
+var have_quota = {TAG_havequota}
+<TAG_VAREND_QUOTA>
+
+<TAG_VARSTART_GROUP>
+var have_group = {TAG_havegroup}
+<TAG_VAREND_GROUP>
+
+
+
+var a_user_desc=new Array(
+//@a_user_comments#
+);
+
+var a_user_homeDir=new Array(
+//@a_user_shares#
+);
+
+var a_user_quota=new Array(
+//@a_dq_size#
+);
+
+<TAG_LOOPSTART_JSARRAY>
+{TAG_jsarray}
+<TAG_LOOPEND_JSARRAY>
+
+function showUser()
+{
+	var index = document.form.user_select.selectedIndex;
+	var len = 0;
+
+	if ((index >= 0) && (index < document.form.user_select.options.length - 1))
+	{
+		document.form.username.value = document.form.user_select.options[index].text;
+		document.form.username.disabled = true;
+		document.form.passwd.value = "****************";
+		document.form.passwdConfirm.value = "****************";
+		document.form.description.value = (index < a_user_desc.length)? a_user_desc[index]: "";
+		document.form.enable_homeDir.checked = false;
+		if(a_user_homeDir.length > 0 && a_user_homeDir.length >= index + 1)
+		{
+			if(a_user_homeDir[index] != "")
+			{
+				document.form.enable_homeDir.checked = true;
+			}
+		}
+		if (have_quota)
+		{
+		if (disk_type == "vfat" || disk_type == "msdos" || disk_type == "fuseblk" || disk_type== "ufsd" || disk_crypt == 1)
+			{
+				document.form.enable_quota.disabled = true;
+				document.form.quota.disabled = true;
+			}
+			else
+			{
+				if(a_user_quota[index] != "-1")
+				{
+					document.form.enable_quota.disabled = false;
+					document.form.enable_quota.checked = true;
+					document.form.quota.disabled = false;
+					document.form.quota.value = a_user_quota[index];
+				}
+				else
+				{
+					document.form.enable_quota.disabled = false;
+					document.form.enable_quota.checked = false;
+					document.form.quota.disabled = false;
+					document.form.quota.value = "";
+				}
+			}
+		}
+	}
+	else if (index == document.form.user_select.options.length - 1)
+	{
+		clearForm();
+	}
+	else
+	{
+		document.form.username.value = "";
+		document.form.passwd.value = "";
+		document.form.passwdConfirm.value = "";
+		document.form.description.value = "";
+		document.form.enable_homeDir.checked = false;
+		if (have_quota)
+		{
+			document.form.enable_quota.checked = false;
+			document.form.quota.value = "";
+		}
+	}
+	document.form.user_select.focus();
+}
+
+function show_system_error_message()
+{
+<TAG_VARSTART_ERR_MSG>
+	var message = "{TAG_err_msg}";
+<TAG_VAREND_ERR_MSG>
+
+	if (message != "")
+	{
+		alert(message);
+	}
+}
+
+//End Script -->
+</script>
+
+
+<body onLoad="get_cookie();show_system_error_message();checkquota()" >
+<form name="form" method="post" action="/cgi/user/userHandler.cgi">
+
+<table border="0" width="600" cellspacing="0" cellpadding="2">
+<tr>
+<TAG_VARSTART_USERMANAGEMENT>
+	<td colspan="2" class="TITLE">{TAG_ft_userManagement}</td>
+<TAG_VAREND_USERMANAGEMENT>
+</tr>
+<tr>
+<TAG_VARSTART_EXISTINGUSERS>
+	<td width="20%" class="HEAD">{TAG_ft_existingUsers}</td>
+<TAG_VAREND_EXISTINGUSERS>
+	<td class="CONTENT"><select size="6" name="user_select" onChange="showUser()">
+<TAG_LOOPSTART_USER_SELECT>
+		<option>{TAG_existUser}</option>
+<TAG_LOOPEND_USER_SELECT>
+		<option>===== END LIST =====</option>
+		</select></td>
+</tr>
+<tr>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+</tr>
+<TAG_VARSTART_IDINFO>
+<tr>
+	<td class="HEAD">{TAG_ft_userName}</td>
+	<td class="CONTENT"><input type="text" name="username" size="20"></td>
+</tr>
+<tr>	<td class="HEAD">{TAG_ft_pw}</td>
+	<td class="CONTENT"><input type="password" name="passwd" size="20" maxlength="16" onFocus="clearPasswd()"></td>
+</tr>
+<tr>    <td>&nbsp;</td>
+	<td class="CONTENT"><input type="password" name="passwdConfirm" size="20" maxlength="16"> {TAG_ft_pwConfirm}</td>
+</tr>
+<tr>	<td class="HEAD">{TAG_desc}</td>
+	<td class="CONTENT"><input type="text" name="description" size="50" maxlength="64"></td>
+</tr>
+<TAG_VAREND_IDINFO>
+<tr>
+<TAG_VARSTART_SHARE>
+	<td class="CONTENT" colspan="2">&nbsp;&nbsp;
+		<input type="checkbox" name="enable_homeDir" value="1"> {TAG_ft_createShare}
+		<br><img src="/image/icon-s.gif" height="5" width="33">
+		{TAG_ft_shareLocation}
+<TAG_VAREND_SHARE>
+<TAG_VARSTART_HOME_PATH>
+		<input type="text" size="10" name="homeDir" value="{TAG_homePath}" readonly>
+<TAG_VAREND_HOME_PATH>
+	</td>
+</tr>
+<script language="javascript">
+	if (have_quota)
+	{
+		document.write("<tr><td class=\"CONTENT\" colspan=\"2\">&nbsp;&nbsp;");
+<TAG_VARSTART_QUOTA>
+		document.write("<input type=\"checkbox\" name=\"enable_quota\" value=\"1\"> {TAG_ft_enableQuota}");
+		document.write("<input type=\"text\" name=\"quota\" size=\"8\"> MB</td>");
+<TAG_VAREND_QUOTA>
+		document.write("</tr>");
+	}
+</script>
+<tr>
+	<td colspan="2">
+<TAG_VARSTART_BUTTON>
+		<p align="center"><input class="button" type="button" name="save" value="{TAG_ft_save}" onClick="checkValue()">&nbsp;
+		<input class="button" type="button" name="clear" value="{TAG_ft_clearForm}" onClick="clearForm()">&nbsp;
+<script language="javascript">
+	if (have_group)
+	{
+		document.write("<input class=\"button\" type=\"button\" name=\"group\" value=\"{TAG_ft_groups}\" onClick=\"groups();\">&nbsp;");
+	}
+</script>
+		<input class="button" type="button" name="delete" value="{TAG_ft_delUser}" onClick="delete_user()">
+<TAG_VAREND_BUTTON>
+		</td>
+	</tr>
+</table>
+</form>
+</body>
+
+
+<script language="JavaScript" type="text/javascript">
+<!-- Start Script
+<TAG_VARSTART_JS>
+
+var msg_no_user = "{TAG_em_msg_no_user}";
+var msg_password_match = "{TAG_em_msg_password_match}";
+var msg_blank = " {TAG_msg_blank}";
+var msg_check_invalid = " {TAG_msg_check_invalid}";
+var msg_greater = " {TAG_msg_greater} ";
+var msg_less = " {TAG_msg_less} ";
+
+function clearPasswd()
+{
+	document.form.passwd.value='';
+	document.form.passwdConfirm.value='';
+}
+
+function checkValue()
+{
+	var msg = storlib_checkBlank(document.form.username, "{TAG_ft_userName}", true, msg_blank);
+	if(msg.length > 0)
+	{
+		alert(msg);
+		return false;
+	}
+
+	var s1=  document.form.username.value.toLowerCase();
+	document.form.username.value = s1;
+	
+	if(document.form.passwd.value != document.form.passwdConfirm.value)
+	{
+		msg = msg_password_match;
+		if(msg.length > 0)
+		{
+			alert(msg);
+			return false;
+		}
+	}
+
+	if (have_quota)
+	{
+		msg = storlib_checkBlank(document.form.quota, "{TAG_ft_quota}", document.form.enable_quota.checked, msg_blank);
+		if(msg.length > 0)
+		{
+			alert(msg);
+			return false;
+		}
+		else
+		{
+			msg = storlib_checkInt(document.form.quota, "{TAG_ft_quota}", 1, disk_size, document.form.enable_quota.checked, msg_blank, msg_check_invalid, msg_greater, msg_less);
+			if(msg.length > 0)
+			{
+				alert(msg);
+				return false;
+			}
+		}
+	}
+	document.form.username.disabled = false;
+	document.form.submit();
+}
+
+function clearForm()
+{
+	document.form.user_select.selectedIndex = document.form.user_select.options.length - 1;
+	document.form.username.value = "";
+	document.form.username.disabled = false;
+	document.form.passwd.value = "";
+	document.form.passwdConfirm.value = "";
+	document.form.description.value = "";
+	document.form.enable_homeDir.checked = false;
+
+	if (have_quota)
+	{
+		if (disk_type == "vfat" || disk_type == "msdos" || disk_type == "fuseblk" || disk_type== "ufsd" || disk_crypt == 1)
+		{
+			document.form.enable_quota.disabled = true;
+			document.form.quota.disabled = true;
+		}
+		else
+		{
+			document.form.enable_quota.checked = false;
+			document.form.quota.value = "";
+		}
+	}
+}
+
+function groups()
+{
+	document.form.username.disabled = false;
+
+	var index = document.form.user_select.selectedIndex;
+	var name = document.form.username;
+	var description = document.form.description;
+
+	if(index < 0||index >= (document.form.user_select.options.length - 1))
+	{
+		alert(msg_no_user);
+		return ;
+	}
+
+	var para = "name=" + name.value;
+	var target = "/cgi/user/userMembership.cgi?" + para;
+
+	gotoUrl(target);
+}
+
+function delete_user()
+{
+	document.form.username.disabled = false;
+
+	var index = document.form.user_select.selectedIndex;
+	var name = document.form.username;
+
+	if(index < 0||index >= (document.form.user_select.options.length - 1))
+	{
+		alert(msg_no_user);
+		return;
+	}
+
+	if (confirm("{TAG_jc_delConfirm}") == true)
+	{
+		var para = "name=" + name.value;
+		var target = "/cgi/user/userDeleteHandler.cgi?" + para;
+
+		gotoUrl(target);
+	}
+}
+
+function checkquota()
+{
+	if (have_quota)
+	{
+		if (disk_type == "vfat" || disk_type == "msdos" || disk_type == "fuseblk" || disk_type== "ufsd" || disk_crypt == 1)
+		{
+			document.form.enable_quota.disabled = true;
+			document.form.quota.disabled = true;
+		}
+		else
+		{
+			document.form.enable_quota.disabled = false;
+			document.form.quota.disabled = false;
+			document.form.quota.value = "";
+		}
+	}
+}
+
+<TAG_VAREND_JS>
+//End Script -->
+</script>
+
+
+</html>

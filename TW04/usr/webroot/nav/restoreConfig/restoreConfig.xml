@@ -1,0 +1,1 @@
+<item id="restoreConfig" label="ft_restoreConfig" description="" url="cgi/restoreConfig/restoreConfig.cgi" parent="maintenance" order="50"/>

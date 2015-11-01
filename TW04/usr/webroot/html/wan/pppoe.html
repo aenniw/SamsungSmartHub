@@ -1,0 +1,242 @@
+<html>
+
+<head>
+<TAG_VARSTART_CHARSET>
+<meta http-equiv="Content-Type" content="text/html; charset={TAG_charset}">
+<TAG_VAREND_CHARSET>
+<title>Network Setting</title>
+<link rel="StyleSheet" type="text/css" href="/css/storlib.css">
+
+</head>
+
+<script language="JavaScript" type="text/javascript" src="/javascript/storlib.js"></script>
+<script language="JavaScript" type="text/javascript">
+<!-- Start Script
+
+
+function changepage()
+{
+	if(document.form.bootproto[0].selected == true)
+	{
+		location.replace("wan.cgi?temp_bootproto=static");
+	}
+	else if (document.form.bootproto[1].selected == true)
+	{
+		location.replace("wan.cgi?temp_bootproto=dhcp");
+	}
+	else if (document.form.bootproto[3].selected == true)
+	{
+		location.replace("wan.cgi?temp_bootproto=none");
+	}
+}
+
+function bootproto_select()
+{
+	changepage();
+}
+
+function dns_select()
+{
+	if(document.form.dnsStatic[1].checked == true)
+	{
+		document.form.dns_p_1.disabled = false;
+		document.form.dns_p_2.disabled = false;
+		document.form.dns_p_3.disabled = false;
+		document.form.dns_p_4.disabled = false;
+		document.form.dns_b1_1.disabled = false;
+		document.form.dns_b1_2.disabled = false;
+		document.form.dns_b1_3.disabled = false;
+		document.form.dns_b1_4.disabled = false;
+		document.form.dns_b2_1.disabled = false;
+		document.form.dns_b2_2.disabled = false;
+		document.form.dns_b2_3.disabled = false;
+		document.form.dns_b2_4.disabled = false;
+	}
+	else
+	{
+		document.form.dns_p_1.disabled = true;
+		document.form.dns_p_2.disabled = true;
+		document.form.dns_p_3.disabled = true;
+		document.form.dns_p_4.disabled = true;
+		document.form.dns_b1_1.disabled = true;
+		document.form.dns_b1_2.disabled = true;
+		document.form.dns_b1_3.disabled = true;
+		document.form.dns_b1_4.disabled = true;
+		document.form.dns_b2_1.disabled = true;
+		document.form.dns_b2_2.disabled = true;
+		document.form.dns_b2_3.disabled = true;
+		document.form.dns_b2_4.disabled = true;
+	}
+}
+
+function show_system_error_message()
+{
+<TAG_VARSTART_ERR_MSG>
+	var message = "{TAG_err_msg}";
+<TAG_VAREND_ERR_MSG>
+
+	if (message != "")
+	{
+		alert(message);
+	}
+}
+
+//End Script -->
+</script>
+
+
+<body onLoad="get_cookie();dns_select();show_system_error_message()">
+<FORM name="form" method="post" action="/cgi/wan/pppoeHandler.cgi">
+<table border="0" width="550" cellspacing="0" cellpadding="2">
+    <tr>
+<TAG_VARSTART_SETTING>
+	<td colspan="2" class="TITLE">{TAG_ft_setting}</td>
+<TAG_VAREND_SETTING>
+    </tr>
+    <tr>
+<TAG_VARSTART_IPMODE>
+	<td class="HEAD">{TAG_ft_ipMode}</td>
+<TAG_VAREND_IPMODE>
+<TAG_VARSTART_BOOTPROTO>
+	<td width="320" >
+	    <SELECT name="bootproto" onChange="bootproto_select()">
+		<OPTION {TAG_Static_checked} value="static">{TAG_ft_Static}</OPTION>
+		<OPTION {TAG_DHCP_checked} value="dhcp">{TAG_ft_DHCP}</OPTION>
+		<OPTION {TAG_PPPoE_checked} value="pppoe">{TAG_ft_PPPoE}</OPTION>
+		<OPTION {TAG_none_checked} value="none">{TAG_ft_none}</OPTION>
+	    </SELECT>
+<TAG_VAREND_BOOTPROTO>
+<TAG_VARSTART_RESET_DHCP>
+		<input class="button" name="reget_button" type="button" value="{TAG_ft_reset_dhcp}" onClick="regetIP()">
+<TAG_VAREND_RESET_DHCP>
+	</td>
+    </tr>
+    <tr>
+<TAG_VARSTART_IPMASQUERADE>
+	<td class="HEAD">{TAG_ft_masquerading}</td>
+<TAG_VAREND_IPMASQUERADE>
+<TAG_VARSTART_MASQUERADE_TYPE>
+	<td>
+	    <SELECT name="masq_type" onChange="">
+		<OPTION {TAG_forward_and_masq_checked} value="1">{TAG_ft_forward_and_masquerade}</OPTION>
+		<OPTION {TAG_not_forward_checked} value="0">{TAG_ft_not_forward}</OPTION>
+	    </SELECT>
+	</td>
+<TAG_VAREND_MASQUERADE_TYPE>
+    </tr>
+    <tr>
+<TAG_VARSTART_ACCOUNT>
+	<td class="HEAD">{TAG_ft_account}</td>
+	<td><input type="text" name="account" size="15" value="{TAG_account}"></td>
+<TAG_VAREND_ACCOUNT>
+    </tr>
+    <tr>
+<TAG_VARSTART_PASSWORD>
+	<td class="HEAD">{TAG_ft_passwd}</td>
+	<td><input type="text" name="passwd" size="15" value="{TAG_passwd}"></td>
+<TAG_VAREND_PASSWORD>
+    </tr>
+    <tr>
+<TAG_VARSTART_IPADDRESS_PPPOE>
+	<td class="HEAD">{TAG_ft_ip}</td>
+	<td>{TAG_ip}
+<TAG_VAREND_IPADDRESS_PPPOE>
+	</td>
+    </tr>
+    <tr>
+<TAG_VARSTART_NETMASK_PPPOE>
+	<td class="HEAD">{TAG_ft_subnetMask}</td>
+	<td>{TAG_subnetMask}
+<TAG_VAREND_NETMASK_PPPOE>
+	</td>
+    </tr>
+    <tr>
+<TAG_VARSTART_GATEWAY_PPPOE>
+	<td class="HEAD">{TAG_ft_gateway}</td>
+	<td>{TAG_gateway}
+<TAG_VAREND_GATEWAY_PPPOE>
+	</td>
+    </tr>
+<TAG_VARSTART_DNSSTATIC>
+    <tr>
+	<td class="CONTENT" colspan="2"><input type="radio" name="dnsStatic" value="0" {TAG_dhcp_dns}  onClick="dns_select()">
+	&nbsp;{TAG_ft_dhcp_dns}</td>
+    </tr>
+    <tr>
+	<td class="CONTENT" colspan="2"><input type="radio" name="dnsStatic" value="1" {TAG_fix_dns} onClick="dns_select()" >
+	&nbsp;{TAG_ft_fix_dns}</td>
+    </tr>
+<TAG_VAREND_DNSSTATIC>	  
+    <tr>
+<TAG_VARSTART_DNS1>
+	<td class="HEAD">{TAG_ft_1st}</td>
+	<td>&nbsp;
+	    <input type="text" name="dns_p_1" size="3" maxlength="3" value="{TAG_dns1_1}">.
+	    <input type="text" name="dns_p_2" size="3" maxlength="3" value="{TAG_dns1_2}">.
+	    <input type="text" name="dns_p_3" size="3" maxlength="3" value="{TAG_dns1_3}">.
+	    <input type="text" name="dns_p_4" size="3" maxlength="3" value="{TAG_dns1_4}">
+<TAG_VAREND_DNS1>
+	</td>
+    </tr>
+    <tr>
+<TAG_VARSTART_DNS2>
+	<td class="HEAD">{TAG_ft_2nd}</td>
+	<td>&nbsp;
+	    <input type="text" name="dns_b1_1" size="3" maxlength="3" value="{TAG_dns2_1}">.
+	    <input type="text" name="dns_b1_2" size="3" maxlength="3" value="{TAG_dns2_2}">.
+	    <input type="text" name="dns_b1_3" size="3" maxlength="3" value="{TAG_dns2_3}">.
+	    <input type="text" name="dns_b1_4" size="3" maxlength="3" value="{TAG_dns2_4}">
+<TAG_VAREND_DNS2>
+	    </td>
+    </tr>
+    <tr>
+<TAG_VARSTART_DNS3>
+	<td class="HEAD">{TAG_ft_3rd}</td>
+	<td>&nbsp;
+	    <input type="text" name="dns_b2_1" size="3" maxlength="3" value="{TAG_dns3_1}">.
+	    <input type="text" name="dns_b2_2" size="3" maxlength="3" value="{TAG_dns3_2}">.
+	    <input type="text" name="dns_b2_3" size="3" maxlength="3" value="{TAG_dns3_3}">.
+	    <input type="text" name="dns_b2_4" size="3" maxlength="3" value="{TAG_dns3_4}">
+<TAG_VAREND_DNS3>
+	</td>
+    </tr>
+    <tr>
+	<td colspan="2" width="320">
+<TAG_VARSTART_BUTTON>
+	    <p align="center"><input class="button" type="button" name="save" value="{TAG_bt_save}" style="width: 60px" onClick="checkValue()">
+	</td>
+<TAG_VAREND_BUTTON>
+    </tr>
+</table> 
+<TAG_VARSTART_OLDIPADDR>
+	<input type="hidden" name="oldipaddr" value="{TAG_oldipaddr}">
+<TAG_VAREND_OLDIPADDR>
+	<input type="hidden" name="reget_mode" value="none">
+</form>
+</body>
+
+
+<script language="JavaScript" type="text/javascript">
+<!-- Start Script
+<TAG_VARSTART_JS>
+
+var msg_blank = " {TAG_msg_blank}";
+var msg_check_invalid = " {TAG_msg_check_invalid}";
+var msg_greater = " {TAG_msg_greater} ";
+var msg_less = " {TAG_msg_less} ";
+
+function regetIP()
+{
+	document.form.reget_mode.value='pppoe';
+	document.form.submit();
+}
+
+function checkValue()
+{
+	document.form.submit();
+}
+
+<TAG_VAREND_JS>
+//End Script -->
+</script>
+</html>

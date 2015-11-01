@@ -1,0 +1,352 @@
+<html>
+
+<head>
+<TAG_VARSTART_CHARSET>
+<meta http-equiv="Content-Type" content="text/html; charset={TAG_charset}">
+<TAG_VAREND_CHARSET>
+<title>Network Setting</title>
+<link rel="StyleSheet" type="text/css" href="/css/storlib.css">
+
+</head>
+
+<script language="JavaScript" type="text/javascript" src="/javascript/storlib.js"></script>
+<script language="JavaScript" type="text/javascript">
+<!-- Start Script
+
+<TAG_VARSTART_IP_TYPE>
+	var ip_type = {TAG_ip_type} ;
+<TAG_VAREND_IP_TYPE>
+
+
+
+function bootproto_select()
+{
+	if(document.form.bootproto[1].checked == true)
+	{
+		document.form.ipaddr_1.disabled = false;
+		document.form.ipaddr_2.disabled = false;
+		document.form.ipaddr_3.disabled = false;
+		document.form.ipaddr_4.disabled = false;
+		document.form.netmask_1.disabled = false;
+		document.form.netmask_2.disabled = false;
+		document.form.netmask_3.disabled = false;
+		document.form.netmask_4.disabled = false;
+		document.form.gateway_1.disabled = false;
+		document.form.gateway_2.disabled = false;
+		document.form.gateway_3.disabled = false;
+		document.form.gateway_4.disabled = false;
+		document.form.dnsStatic[0].disabled = true;
+		document.form.dnsStatic[1].checked = true;
+		dns_select();
+	}
+	else
+	{
+		document.form.ipaddr_1.disabled = true;
+		document.form.ipaddr_2.disabled = true;
+		document.form.ipaddr_3.disabled = true;
+		document.form.ipaddr_4.disabled = true;
+		document.form.netmask_1.disabled = true;
+		document.form.netmask_2.disabled = true;
+		document.form.netmask_3.disabled = true;
+		document.form.netmask_4.disabled = true;
+		document.form.gateway_1.disabled = true;
+		document.form.gateway_2.disabled = true;
+		document.form.gateway_3.disabled = true;
+		document.form.gateway_4.disabled = true;
+		document.form.dnsStatic[0].disabled = false;
+	}
+}
+
+function dns_select()
+{
+	if(document.form.dnsStatic[1].checked == true)
+	{
+		document.form.dns_p_1.disabled = false;
+		document.form.dns_p_2.disabled = false;
+		document.form.dns_p_3.disabled = false;
+		document.form.dns_p_4.disabled = false;
+		document.form.dns_b1_1.disabled = false;
+		document.form.dns_b1_2.disabled = false;
+		document.form.dns_b1_3.disabled = false;
+		document.form.dns_b1_4.disabled = false;
+		document.form.dns_b2_1.disabled = false;
+		document.form.dns_b2_2.disabled = false;
+		document.form.dns_b2_3.disabled = false;
+		document.form.dns_b2_4.disabled = false;
+	}
+	else
+	{
+		document.form.dns_p_1.disabled = true;
+		document.form.dns_p_2.disabled = true;
+		document.form.dns_p_3.disabled = true;
+		document.form.dns_p_4.disabled = true;
+		document.form.dns_b1_1.disabled = true;
+		document.form.dns_b1_2.disabled = true;
+		document.form.dns_b1_3.disabled = true;
+		document.form.dns_b1_4.disabled = true;
+		document.form.dns_b2_1.disabled = true;
+		document.form.dns_b2_2.disabled = true;
+		document.form.dns_b2_3.disabled = true;
+		document.form.dns_b2_4.disabled = true;
+	}
+}
+
+function show_system_error_message()
+{
+<TAG_VARSTART_ERR_MSG>
+	var message = "{TAG_err_msg}";
+<TAG_VAREND_ERR_MSG>
+
+	if (message != "")
+	{
+		alert(message);
+	}
+}
+
+//End Script -->
+</script>
+
+
+<body onLoad="get_cookie();bootproto_select();dns_select();show_system_error_message()">
+<FORM name="form" method="post" action="/cgi/lan/lan_nasHandler.cgi">
+<table border="0" width="600" cellspacing="0" cellpadding="2">
+<tr>
+<TAG_VARSTART_SETTING>
+	<td colspan="2" class="TITLE">{TAG_ft_setting}</td>
+<TAG_VAREND_SETTING>
+</tr>
+<tr>
+<TAG_VARSTART_HOSTNAME>
+	<td class="HEAD">{TAG_ft_hostname}</td>
+	<td class="CONTENT"><input type="text" name="hostname" size="15" maxlength="15" value="{TAG_hostname}"></td>
+<TAG_VAREND_HOSTNAME>
+</tr>
+<tr>
+<TAG_VARSTART_IPSETTING>
+	<td class="HEAD" valign="top" nowrap>{TAG_ft_ipSetting}</td>
+<TAG_VAREND_IPSETTING>
+	<td>
+		<table border="0" width="100%" cellspacing="0" cellpadding="0">
+<TAG_VARSTART_BOOTPROTO>
+		<tr><td><input type="radio" value="dhcp" {TAG_dhcp} name="bootproto" onClick="bootproto_select()"></td>
+		    <td class="CONTENT" colspan=2>{TAG_ft_dhcpIP}</td>
+		</tr>
+		<tr><td><input type="radio" value="none" {TAG_none} name="bootproto" onClick="bootproto_select()"></td>
+		    <td class="CONTENT" colspan=2>{TAG_ft_fixIP}</td>
+		</tr>
+<TAG_VAREND_BOOTPROTO>
+		<tr><td>&nbsp;</td>
+<TAG_VARSTART_IPADDRESS>
+		    <td class="CONTENT">&nbsp;&nbsp; {TAG_ft_ip}</td>
+		    <td class="CONTENT">&nbsp;
+			<input type="text" name="ipaddr_1" size="3" maxlength="3" value="{TAG_ip_1}" onkeyup="movenext(this,3);">.
+			<input type="text" name="ipaddr_2" size="3" maxlength="3" value="{TAG_ip_2}" onkeyup="movenext(this,4);">.
+			<input type="text" name="ipaddr_3" size="3" maxlength="3" value="{TAG_ip_3}" onkeyup="movenext(this,5);">.
+			<input type="text" name="ipaddr_4" size="3" maxlength="3" value="{TAG_ip_4}" onkeyup="checkdot(this,6);">
+<TAG_VAREND_IPADDRESS>
+		    </td>
+		</tr>
+		<tr><td>&nbsp;</td>
+<TAG_VARSTART_NETMASK>
+		   <td class="CONTENT">&nbsp;&nbsp; {TAG_ft_subnetMask}</td>
+		   <td class="CONTENT">&nbsp;
+		       <input type="text" name="netmask_1" size="3" maxlength="3" value="{TAG_mask_1}" onkeyup="movenext(this,7);">.
+		       <input type="text" name="netmask_2" size="3" maxlength="3" value="{TAG_mask_2}" onkeyup="movenext(this,8);">.
+		       <input type="text" name="netmask_3" size="3" maxlength="3" value="{TAG_mask_3}" onkeyup="movenext(this,9);">.
+		       <input type="text" name="netmask_4" size="3" maxlength="3" value="{TAG_mask_4}" onkeyup="checkdot(this,10);">
+<TAG_VAREND_NETMASK>
+		     </td>
+		</tr>
+		<tr><td>&nbsp;</td>
+<TAG_VARSTART_GATEWAY>
+		    <td class="CONTENT">&nbsp;&nbsp; {TAG_ft_gateway}</td>
+		    <td class="CONTENT">&nbsp;
+			<input type="text" name="gateway_1" size="3" maxlength="3" value="{TAG_way_1}" onkeyup="movenext(this,11);">.
+			<input type="text" name="gateway_2" size="3" maxlength="3" value="{TAG_way_2}" onkeyup="movenext(this,12);">.
+			<input type="text" name="gateway_3" size="3" maxlength="3" value="{TAG_way_3}" onkeyup="movenext(this,13);">.
+			<input type="text" name="gateway_4" size="3" maxlength="3" value="{TAG_way_4}" onkeyup="checkdot(this,14);">
+<TAG_VAREND_GATEWAY>
+		    </td>
+		</tr>
+<TAG_VARSTART_DNSSTATIC>
+		<tr><td><input type="radio" value="0" {TAG_dhcp_dns} name="dnsStatic" onClick="dns_select()"></td>
+		    <td colspan=2 class="CONTENT">{TAG_ft_dhcp_dns}</td>
+		</tr>
+		<tr><td><input type="radio" value="1" {TAG_fix_dns} name="dnsStatic" onClick="dns_select()"></td>
+		    <td colspan=2 class="CONTENT">{TAG_ft_fix_dns}</td>
+		</tr>
+<TAG_VAREND_DNSSTATIC>
+		<tr><td>&nbsp;</td>
+<TAG_VARSTART_DNS1>
+		    <td class="CONTENT">&nbsp;&nbsp; {TAG_ft_1st}</td>
+		    <td class="CONTENT">&nbsp;
+			<input type="text" name="dns_p_1" size="3" maxlength="3" value="{TAG_dns1_1}" onkeyup="movenext(this,17);">.
+			<input type="text" name="dns_p_2" size="3" maxlength="3" value="{TAG_dns1_2}" onkeyup="movenext(this,18);">.
+			<input type="text" name="dns_p_3" size="3" maxlength="3" value="{TAG_dns1_3}" onkeyup="movenext(this,19);">.
+			<input type="text" name="dns_p_4" size="3" maxlength="3" value="{TAG_dns1_4}" onkeyup="checkdot(this,20);">
+<TAG_VAREND_DNS1>
+		    </td>
+		</tr>
+		<tr><td>&nbsp;</td>
+<TAG_VARSTART_DNS2>
+		    <td class="CONTENT">&nbsp;&nbsp; {TAG_ft_2nd}</td>
+		    <td class="CONTENT">&nbsp;
+			<input type="text" name="dns_b1_1" size="3" maxlength="3" value="{TAG_dns2_1}" onkeyup="movenext(this,21);">.
+			<input type="text" name="dns_b1_2" size="3" maxlength="3" value="{TAG_dns2_2}" onkeyup="movenext(this,22);">.
+			<input type="text" name="dns_b1_3" size="3" maxlength="3" value="{TAG_dns2_3}" onkeyup="movenext(this,23);">.
+			<input type="text" name="dns_b1_4" size="3" maxlength="3" value="{TAG_dns2_4}" onkeyup="checkdot(this,24);">
+<TAG_VAREND_DNS2>
+		    </td>
+		</tr>
+		<tr><td>&nbsp;</td>
+<TAG_VARSTART_DNS3>
+		    <td class="CONTENT">&nbsp;&nbsp; {TAG_ft_3rd}</td>
+		    <td class="CONTENT">&nbsp;
+			<input type="text" name="dns_b2_1" size="3" maxlength="3" value="{TAG_dns3_1}" onkeyup="movenext(this,25);">.
+			<input type="text" name="dns_b2_2" size="3" maxlength="3" value="{TAG_dns3_2}" onkeyup="movenext(this,26);">.
+			<input type="text" name="dns_b2_3" size="3" maxlength="3" value="{TAG_dns3_3}" onkeyup="movenext(this,27);">.
+			<input type="text" name="dns_b2_4" size="3" maxlength="3" value="{TAG_dns3_4}" onkeyup="checkdot(this,28);">
+<TAG_VAREND_DNS3>
+		    </td>
+		</tr>
+		</table>
+		</td>
+	</tr>
+	<tr>
+<TAG_VARSTART_MAC>
+	    	<td class="HEAD">{TAG_ft_mac}</td>
+		<td class="CONTENT">&nbsp;{TAG_mac}</td>
+<TAG_VAREND_MAC>
+	</tr>
+	<tr>
+		<td colspan="2">
+<TAG_VARSTART_BUTTON>
+		<p align="center"><input class="button" type="button" name="save" value="{TAG_bt_save}" style="width: 60px" onClick="checkValue()"></td>
+<TAG_VAREND_BUTTON>
+	</tr>
+</table>
+<TAG_VARSTART_OLDIPADDR>
+	<input type="hidden" name="oldipaddr" value="{TAG_oldipaddr}">
+<TAG_VAREND_OLDIPADDR>
+</form>
+</body>
+
+
+<script language="JavaScript" type="text/javascript">
+<!-- Start Script
+<TAG_VARSTART_JS>
+
+var msg_blank = " {TAG_msg_blank}";
+var msg_check_invalid = " {TAG_msg_check_invalid}";
+var msg_greater = " {TAG_msg_greater} ";
+var msg_less = " {TAG_msg_less} ";
+var dhcp_disable_flag = "{TAG_dhcp_disable}";
+
+    if(dhcp_disable_flag == "yes")
+		document.form.bootproto[0].disabled = true;
+
+function checkValue()
+{
+	var msg = "";
+	var f = document.form;
+	var mask = new Array();
+	var ipaddr = new Array();
+	var gateway = new Array();
+	var isTrueMask = false;
+	var isTheSameRange = false;
+	var total;
+
+	for (i = 0; i < 4; i++) {
+		mask[i] = eval('f.netmask_'+(i+1)+'.value');
+		ipaddr[i] = eval('f.ipaddr_'+(i+1)+'.value');
+		gateway[i] = eval('f.gateway_'+(i+1)+'.value');
+	}
+
+	msg = storlib_checkBlank(document.form.hostname, "{TAG_ft_hostname_js}", true, msg_blank);
+	if (msg.length > 0)
+	{
+		alert(msg);
+		return false;
+	}
+
+	if (document.form.bootproto[1].checked == true)
+	{
+		msg = storlib_checkIpValue(document.form.ipaddr_1, document.form.ipaddr_2, document.form.ipaddr_3, document.form.ipaddr_4, 0, 255, 0, 255, 0, 255, 0, 255, true, "{TAG_em_ip}", msg_blank, msg_check_invalid, msg_greater, msg_less)
+		if (msg.length > 0)
+		{
+			alert(msg);
+			return false;
+		}
+
+		msg = storlib_checkIpValue(document.form.netmask_1, document.form.netmask_2, document.form.netmask_3, document.form.netmask_4, 0, 255, 0, 255, 0, 255, 0, 255, true, "{TAG_em_subnetMask}", msg_blank, msg_check_invalid, msg_greater, msg_less)
+		if (msg.length > 0)
+		{
+			alert(msg);
+			return false;
+		}
+
+		isTrueMask = isSubnetMask(mask);
+		
+		if (!isTrueMask)
+		{
+			msg = "{TAG_em_subnetMask}";
+			alert(msg);
+			return false;
+		}
+
+		msg = storlib_checkIpValue(document.form.gateway_1, document.form.gateway_2, document.form.gateway_3, document.form.gateway_4, 0, 255, 0, 255, 0, 255, 0, 255, false, "{TAG_em_gateway}", msg_blank, msg_check_invalid, msg_greater, msg_less)
+		if (msg.length > 0)
+		{
+			alert(msg);
+			return false;
+		}
+		
+		//isTheSameRange = isTheSameIpRange(ipaddr, mask, gateway);
+		
+		//if (!isTheSameRange)
+		//{
+		//	msg = "{TAG_em_gateway}";
+		//	alert(msg);
+		//	return false;
+		//}
+	}
+
+	if (document.form.dnsStatic[1].checked == true)
+	{
+		msg = storlib_checkIpValue(document.form.dns_p_1, document.form.dns_p_2, document.form.dns_p_3, document.form.dns_p_4, 0, 255, 0, 255, 0, 255, 0, 255, false, "{TAG_em_1st}", msg_blank, msg_check_invalid, msg_greater, msg_less)
+		if(msg.length > 0) {
+			alert(msg);
+			return false;
+		}
+		msg = storlib_checkIpValue(document.form.dns_b1_1, document.form.dns_b1_2, document.form.dns_b1_3, document.form.dns_b1_4, 0, 255, 0, 255, 0, 255, 0, 255, false, "{TAG_em_2nd}", msg_blank, msg_check_invalid, msg_greater, msg_less)
+		if(msg.length > 0) {
+			alert(msg);
+			return false;
+		}
+		msg = storlib_checkIpValue(document.form.dns_b2_1, document.form.dns_b2_2, document.form.dns_b2_3, document.form.dns_b2_4, 0, 255, 0, 255, 0, 255, 0, 255, false, "{TAG_em_3rd}", msg_blank, msg_check_invalid, msg_greater, msg_less)
+		if(msg.length > 0) {
+			alert(msg);
+			return false;
+		}
+
+		total = f.dns_p_1.value + f.dns_p_2.value + f.dns_p_3.value + f.dns_p_4.value
+			+ f.dns_b1_1.value + f.dns_b1_2.value + f.dns_b1_3.value+ f.dns_b1_4.value
+				+ f.dns_b2_1.value + f.dns_b2_2.value + f.dns_b2_3.value + f.dns_b2_4.value
+		
+		if(total == 0) {
+			msg = storlib_checkIpValue(document.form.dns_p_1, document.form.dns_p_2, document.form.dns_p_3, document.form.dns_p_4, 0, 255, 0, 255, 0, 255, 0, 255, true, "{TAG_em_1st}", msg_blank, msg_check_invalid, msg_greater, msg_less)
+			if(msg.length > 0) {
+				alert(msg);
+				return false;
+			}
+		}
+
+	}
+
+	document.form.submit();
+}
+
+<TAG_VAREND_JS>
+//End Script -->
+</script>
+</html>

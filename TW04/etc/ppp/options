@@ -1,0 +1,6 @@
+lock
+auth
+require-mschap-v2
+require-mschap
+require-chap
+require-pap

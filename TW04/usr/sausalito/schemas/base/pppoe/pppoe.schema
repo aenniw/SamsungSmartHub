@@ -1,0 +1,7 @@
+<class name="System" namespace="Pppoe" version="1.0">
+	<property name="enabled" type="boolean" default="0"/>
+	<property name="devname" type="devicename" default="eth0"/>
+	<property name="connMode"  type="scalar" default="off"/>
+	<property name="account"  type="scalar" default=""/>
+	<property name="passwd"  type="scalar" default=""/>
+</class>

@@ -1,0 +1,64 @@
+#!/bin/sh -
+
+HOME=/
+PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/hddapp/bin:/usr/hddapp/sbin:/usr/local/bin:/usr/local/sbin
+export HOME PATH
+
+. /etc/rc.conf
+
+echo "Checking and Mounting filesystem(s) ..."
+
+##
+##debug_Aaron on 02/21/2005, Extract hddapp.tgz tpo Ramdisk in stead of hard disk 
+##            Ramdisk size should be enlarged
+##
+mkdir -p /tmp
+
+hddapp_mtd=`cat /proc/mtd | grep "Application" | cut -f1 -d:`
+if [ -z "$hddapp_mtd" ]; then
+	echo "Warning: Empty mtd for Application...."
+else
+        echo "Copy hddapp.tgz from flash to Ramdisk..."
+        dd if=/dev/${hddapp_mtd} of=/mnt/hddapp.tgz
+        rm -rf /usr/hddapp
+        tar zxpf /mnt/hddapp.tgz -C /usr
+fi
+
+##debug_Aaron on 10/14/2004, change file system type to auto (11/05/2004)
+##            on 11/12/2004, mount according to file system type
+num=1
+MOUNT_DIR=/volume1
+for device in /dev/hda1 /dev/hdc1 /dev/sda1 /dev/sdb1
+do
+        mkdir -p /volume$num
+
+        MOUNT_DIR=/volume$num
+
+        dd if=$device of=/tmp/out.fat32 count=1
+        grep "kdosfs" /tmp/out.fat32
+        if [ $? = 0 ]; then
+                echo "$device is FAT32"
+                mount -t vfat -o umask=000 $device /volume$num
+        else
+                echo "$device is not FAT32"
+                mount -t auto -o usrquota,grpquota $device /volume$num
+        fi
+ 	if [ $? = 0 ]; then
+                num=`expr $num + 1`
+                echo "volume$num"
+
+		if [ -f "$MOUNT_DIR/aquota.user" -a -f "$MOUNT_DIR/aquota.group" ]; then
+                        DoQuotaCheck=0
+                 else
+                        DoQuotaCheck=1
+                 fi
+
+                 if [ $DoQuotaCheck -eq 1 ]; then
+                         echo "Quotacheck on $MOUNT_DIR."
+                         /usr/hddapp/sbin/quotacheck -c -g -u -F vfsv0 $MOUNT_DIR
+                 fi
+
+                 echo "Quotaon on $MOUNT_DIR."
+                 /usr/hddapp/sbin/quotaon -F vfsv0 $MOUNT_DIR
+        fi
+done

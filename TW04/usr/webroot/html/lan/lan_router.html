@@ -1,0 +1,180 @@
+<html>
+
+<head>
+<TAG_VARSTART_CHARSET>
+<meta http-equiv="Content-Type" content="text/html; charset={TAG_charset}">
+<TAG_VAREND_CHARSET>
+<title>Network Setting</title>
+<link rel="StyleSheet" type="text/css" href="/css/storlib.css">
+
+</head>
+
+<script language="JavaScript" type="text/javascript" src="/javascript/storlib.js"></script>
+<script language="JavaScript" type="text/javascript">
+<!-- Start Script
+
+function show_system_error_message()
+{
+<TAG_VARSTART_ERR_MSG>
+	var message = "{TAG_err_msg}";
+<TAG_VAREND_ERR_MSG>
+
+	if (message != "")
+	{
+		alert(message);
+	}
+}
+
+//End Script -->
+</script>
+
+
+<body onLoad="get_cookie();show_system_error_message()">
+<FORM name="form" method="post" action="/cgi/lan/lan_routerHandler.cgi">
+<!--layerpopup Div-->
+<TAG_VARSTART_WAIT>
+<Div id="layerPop" style="position:absolute; left:50px; top:150px; width:300px; height:40px; z-index:0;display:none;">
+<tr>
+<lign="center" valign="middle">
+<table bgcolor="#FFFFFF" bordercolor="00A5FF" cellpadding="10" cellspacing="1" border="1" width="400" height="30">
+<tr>
+<td align="center">
+<font size="4" color="#0064CD">{TAG_ft_wait}</font><br><br>
+<marquee direction="right" width="400" height="1" scrollamount="30">
+<img src="/image/01_bar_on.png" width="100" height="5">
+</marquee>
+</table>
+</td></tr>
+</table>
+</td></tr>
+</table>
+</center>
+</Div>
+<TAG_VAREND_WAIT>
+<!-- //layerpopup div end-->
+
+<table border="0" width="550" cellspacing="0" cellpadding="2">
+<tr>
+<TAG_VARSTART_SETTING>
+	<td colspan="2" class="TITLE">{TAG_ft_setting}</td>
+<TAG_VAREND_SETTING>
+</tr>
+<!--
+<tr>
+<TAG_VARSTART_HOSTNAME>
+	<td class="HEAD">{TAG_ft_hostname}</td>
+	<td class="CONTENT">&nbsp;<input type="text" name="hostname" size="15" maxlength="15" value="{TAG_hostname}"></td>
+<TAG_VAREND_HOSTNAME>
+</tr>
+-->
+<tr>
+<TAG_VARSTART_IPADDRESS>
+	<td class="HEAD">{TAG_ft_ip}</td>
+	<td class="CONTENT">&nbsp;
+		<input type="text" name="ipaddr_1" size="3" maxlength="3" value="{TAG_ip_1}" onkeyup="movenext(this,1);">.
+		<input type="text" name="ipaddr_2" size="3" maxlength="3" value="{TAG_ip_2}" onkeyup="movenext(this,2);">.
+		<input type="text" name="ipaddr_3" size="3" maxlength="3" value="{TAG_ip_3}" onkeyup="movenext(this,3);">.
+		<input type="text" name="ipaddr_4" size="3" maxlength="3" value="{TAG_ip_4}" onkeyup="checkdot(this,4);">
+</td>
+<TAG_VAREND_IPADDRESS>
+</tr>
+
+<tr>
+<TAG_VARSTART_NETMASK>
+	<td class="HEAD">{TAG_ft_subnetMask}</td>
+	<td class="CONTENT">&nbsp;
+		<input type="text" name="netmask_1" size="3" maxlength="3" value="{TAG_mask_1}" onkeyup="movenext(this,5);">.
+		<input type="text" name="netmask_2" size="3" maxlength="3" value="{TAG_mask_2}" onkeyup="movenext(this,6);">.
+		<input type="text" name="netmask_3" size="3" maxlength="3" value="{TAG_mask_3}" onkeyup="movenext(this,7);">.
+		<input type="text" name="netmask_4" size="3" maxlength="3" value="{TAG_mask_4}" onkeyup="checkdot(this,8);">
+	</td>
+<TAG_VAREND_NETMASK>
+</tr>
+
+<!--
+<tr>
+<TAG_VARSTART_MAC>
+	<td class="HEAD">{TAG_ft_mac}</td>
+	<td class="CONTENT">&nbsp;{TAG_mac}</td>
+<TAG_VAREND_MAC>
+</tr>
+-->
+
+<tr>
+<TAG_VARSTART_BUTTON>
+<td colspan="2">
+		<p align="center"><input class="button" type="button" name="save" value="{TAG_bt_save}" style="width: 60px" onClick="checkValue()"></td>
+<TAG_VAREND_BUTTON>
+	</tr>
+</table>
+<TAG_VARSTART_OLDIPADDR>
+	<input type="hidden" name="oldipaddr" value="{TAG_oldipaddr}">
+<TAG_VAREND_OLDIPADDR>
+</form>
+</body>
+
+
+<script language="JavaScript" type="text/javascript">
+<!-- Start Script
+<TAG_VARSTART_JS>
+
+var msg_blank = " {TAG_msg_blank}";
+var msg_check_invalid = " {TAG_msg_check_invalid}";
+var msg_greater = " {TAG_msg_greater} ";
+var msg_less = " {TAG_msg_less} ";
+
+function ViewlayerPop(){
+	document.getElementById("layerPop").style.display='inline'
+}
+
+function checkValue()
+{
+	var msg = "";
+	var f = document.form;
+	var mask = new Array();
+	var ipaddr = new Array();
+	var isTrueMask = false;
+	var isTheSameRange = false;
+
+	for (i = 0; i < 4; i++) {
+		mask[i] = eval('f.netmask_'+(i+1)+'.value');
+		ipaddr[i] = eval('f.ipaddr_'+(i+1)+'.value');
+	}
+
+	/*
+	msg = storlib_checkBlank(document.form.hostname, "{TAG_ft_hostname_js}", true, msg_blank);
+	if (msg.length > 0)
+	{
+    	alert(msg);
+		return false;
+	}
+	*/
+
+	msg = storlib_checkIpValue(document.form.ipaddr_1, document.form.ipaddr_2, document.form.ipaddr_3, document.form.ipaddr_4, 0, 255, 0, 255, 0, 255, 0, 255, true, "{TAG_em_ip}", msg_blank, msg_check_invalid, msg_greater, msg_less)
+	if (msg.length > 0)
+	{
+		alert(msg);
+		return false;
+	}
+
+	isTrueMask = isSubnetMask(mask);
+		
+	if (!isTrueMask)
+	{
+		msg = "{TAG_em_subnetMask}";
+		alert(msg);
+		return false;
+	}
+
+	if (confirm("{TAG_cf_message}"))
+	{
+		ViewlayerPop();
+		document.form.submit();
+		return true;
+	}
+}
+
+<TAG_VAREND_JS>
+//End Script -->
+</script>
+</html>

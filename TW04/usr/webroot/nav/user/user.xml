@@ -1,0 +1,1 @@
+<item id="user" label="ft_userManagement" description="" url="cgi/user/user.cgi" parent="user_group" order="10"/>

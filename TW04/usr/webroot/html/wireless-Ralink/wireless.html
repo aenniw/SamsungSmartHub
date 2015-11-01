@@ -1,0 +1,885 @@
+<html>
+
+<head>
+<TAG_VARSTART_CHARSET>
+<meta http-equiv="Content-Type" content="text/html; charset={TAG_charset}">
+<TAG_VAREND_CHARSET>
+<title>Wireless Setting</title>
+<link rel="StyleSheet" type="text/css" href="/css/storlib.css">
+</head>
+
+<TAG_VARSTART_JSHEAD>
+<script language="JavaScript" type="text/javascript" src="/javascript/storlib.js"></script>
+<script language="JavaScript" type="text/javascript">
+<!-- Start Script
+
+var focus;
+var sel_channel;
+
+function show_system_error_message()
+{
+	var errmessage = "{TAG_err_msg}";
+
+	if (errmessage != "")
+	{
+		alert(errmessage);
+	}
+}
+
+
+
+function operate_keytype_and_str_total(action)
+{
+	blocking('keytype1',action);
+	blocking('keytype1_select',action);
+	blocking('key1',action);
+	blocking('key1_input',action);
+	blocking('keytype2',action);
+	blocking('keytype2_select',action);
+	blocking('key2',action);
+	blocking('key2_input',action);
+	blocking('keytype3',action);
+	blocking('keytype3_select',action);
+	blocking('key3',action);
+	blocking('key3_input',action);
+	blocking('keytype4',action);
+	blocking('keytype4_select',action);
+	blocking('key4',action);
+	blocking('key4_input',action);
+	blocking('defaultkeyid',action);
+	blocking('defaultkeyid_select',action);
+	
+}
+
+function operate_wpapskkey_and_str_total(action)
+{
+	blocking('wpapskkey',action);
+	blocking('wpapskkey_input',action);
+}
+
+function checkencryptype()
+{
+	if(document.forms[0].encryptype1.value == 'NONE' )
+	{
+		operate_keytype_and_str_total(false);
+		operate_wpapskkey_and_str_total(false);
+		
+	} 
+	else if(document.forms[0].encryptype1.value == 'WEP' )
+	{
+		operate_keytype_and_str_total(true);
+		operate_wpapskkey_and_str_total(false);
+		checkallKeyTypes();
+	}
+}
+
+function checkencryptype0()
+{
+	operate_keytype_and_str_total(false);
+	operate_wpapskkey_and_str_total(false);
+}
+
+function checkencryptype1()
+{
+	operate_keytype_and_str_total(false);
+	operate_wpapskkey_and_str_total(true);
+
+}
+
+
+function checkAuthMode()
+{
+	if(document.forms[0].authmode.value == 'OPEN') 
+	{
+		blocking('encryptype1',false);
+		blocking('encryptype1_select',false);
+		blocking('encryptype2',false);
+		blocking('encryptype2_select',false);
+		blocking('encryptype3',false);
+		blocking('encryptype3_select',false);
+		blocking('encryptype4',false);
+		blocking('encryptype4_select',false);
+		checkencryptype0();
+	}
+	else if (document.forms[0].authmode.value == 'WEPAUTO' || document.forms[0].authmode.value == 'SHARED') 
+	{
+		blocking('encryptype1',false);
+		blocking('encryptype1_select',false);
+		blocking('encryptype2',false);
+		blocking('encryptype2_select',false);
+		blocking('encryptype3',true);
+		blocking('encryptype3_select',true);
+		blocking('encryptype4',false);
+		blocking('encryptype4_select',false);
+		operate_keytype_and_str_total(true);
+		operate_wpapskkey_and_str_total(false);
+		checkallKeyTypes();
+	}
+	else if (document.forms[0].authmode.value == 'WPAPSK')
+	{
+		blocking('encryptype1',true);
+		blocking('encryptype1_select',true);
+		blocking('encryptype2',false);
+		blocking('encryptype2_select',false);
+		blocking('encryptype3',false);
+		blocking('encryptype3_select',false);
+		blocking('encryptype4',false);
+		blocking('encryptype4_select',false);
+		checkencryptype1();
+	}
+	else if (document.forms[0].authmode.value == 'WPA2PSK')
+	{
+		blocking('encryptype1',false);
+		blocking('encryptype1_select',false);
+		blocking('encryptype2',true);
+		blocking('encryptype2_select',true);
+		blocking('encryptype3',false);
+		blocking('encryptype3_select',false);
+		blocking('encryptype4',false);
+		blocking('encryptype4_select',false);
+		checkencryptype1();
+	}
+	else if (document.forms[0].authmode.value == 'WPAPSKWPA2PSK')
+	{
+		blocking('encryptype1',false);
+		blocking('encryptype1_select',false);
+		blocking('encryptype2',false);
+		blocking('encryptype2_select',false);
+		blocking('encryptype3',false);
+		blocking('encryptype3_select',false);
+		blocking('encryptype4',true);
+		blocking('encryptype4_select',true);
+		checkencryptype1();
+	}
+}
+
+
+function checkchannel()
+{
+    var i=0;
+	for(i=0 ; i<2 ; i++) {
+		blocking('channel'+i,false);
+		blocking('channel'+i+'_select',false);
+	}
+}
+
+function checkcountryRegion()
+{
+	var list;
+	
+    checkchannel();
+	blocking('channel'+document.forms[0].countryregion.value,true);
+	blocking('channel'+document.forms[0].countryregion.value+'_select',true);
+
+    list = document.forms[0].channel0;
+    list.options[list.selectedIndex].selected=false;
+    list.options[0].selected=true;
+
+    list = document.forms[0].channel1;
+    list.options[list.selectedIndex].selected=false;
+    list.options[0].selected=true;
+}
+
+
+
+function blocking(nr,show)
+{
+	
+	if (document.getElementById)
+	{
+		var vista = (show) ? 'block' : 'none';
+		document.getElementById(nr).style.display = vista;
+
+	}
+
+	else if (document.layers)
+	{
+		var current = (show) ? 'block' : 'none';
+		document.layers[nr].display = current;
+
+	}
+	else if (document.all)
+	{
+		var current = (show) ? 'block' : 'none';
+		document.all[nr].style.display = current;
+
+	}
+}
+
+function checkKeyTypes(keytype,keyNo)
+{
+	var f = document.forms[0];
+	var key;
+
+	key = eval('f.key'+keyNo);
+	
+	if(keytype.value == 0) {
+	    key.maxLength=13;
+	    key.value = key.value.substring(0,13);
+	} else {
+	    key.maxLength=26;
+	    key.value = key.value.substring(0,26);
+	}
+}
+
+function checkallKeyTypes()
+{
+	var f = document.forms[0];
+	var keytype;
+	var keyNo;
+	
+	for(keyNo=1 ; keyNo<=4 ; keyNo++) {
+	    keytype = eval('f.keytype'+keyNo);
+	    checkKeyTypes(keytype,keyNo);
+	}
+}
+function isNaMAC(s)
+
+{
+	for (var i=0;i<s.length;i++)
+
+    {
+
+         var c=s.charAt(i);
+
+		 if ( (c < '0' || c > '9') && (c < 'a' || c > 'f') && (c < 'A' || c > 'F') )
+
+			 return true;
+
+    }
+
+	return false;
+
+}
+
+function checkWEPKeyValue(errormsg)
+{
+	var i;
+	var f = document.forms[0];
+	var keytype;
+	var key;
+	var strvalue;
+	var msg="";
+	
+	for( i=1 ; i <=4 ; i++) {
+	    keytype = eval('f.keytype'+i+'.value');
+	    key = eval('f.key'+i);
+
+	    strvalue = key.value;
+
+	    if(strvalue.length != 0) {
+		    if(keytype == 0) {
+			if((strvalue.length != 5) && (strvalue.length != 13) ) {
+			    msg = errormsg;
+			    focus = key;
+			    return(msg);
+			}
+		    } else if(keytype == 1) {
+			if((strvalue.length != 10) && (strvalue.length != 26) || (isNaMAC(strvalue))) {
+			    msg = errormsg;
+			    focus = key;
+			    return(msg);
+			}
+		    } 
+	    }
+	    
+	    if( (strvalue.length == 0) && (f.defaultkeyid.value == i) ) {
+		msg = errormsg;
+	    	focus = key;
+	    	return(msg);
+	    }
+
+	}
+	
+	return(msg);
+}
+
+function checkWPAPSKValue(errormsg)
+{
+	var f = document.forms[0];
+	var strvalue;
+	var msg="";
+	
+	strvalue = f.wpapskkey.value;
+//64 hex characters
+	if ( strvalue.length ==64 ) 
+	{
+	 	if (!isNaMAC(strvalue)) 
+	 	{
+		    msg = errormsg;
+		    focus = f.wpapskkey;
+		    return(msg);
+		}
+		
+	}
+	else
+	{
+	    if (strvalue.length < 8 || strvalue.length >63)
+	    {
+		    msg = errormsg;
+		    focus = f.wpapskkey;
+		    return(msg);
+	    }
+	}
+	
+	return(msg);
+}
+
+function checkBeaconPeriodValue(errormsg)
+{
+	var f = document.forms[0];
+	var strvalue;
+	var msg="";
+	
+	strvalue = f.beaconperiod.value;
+//20~1023
+	if (strvalue<20 || strvalue>1023)
+	{
+		msg = errormsg;
+		focus = f.beaconperiod;
+		return(msg);
+	}
+	
+	return(msg);
+}
+
+
+
+function checkIpStr(Ipstring)
+{
+		var ip ;
+		var msg="";
+		
+		ip = Ipstring.split(".");
+		if(ip.length<4 || ip.length>4)
+		{
+			msg ="{TAG_em_errformat} !!";
+			return msg;
+		}
+		for(i=0;i<4 ;i++)
+		{
+			if(isNaN(ip[i]))
+			{
+				msg = "IP"+(i+1)+" {TAG_em_errnumeral} !!";
+				return msg; 
+			}
+			if (ip[i]>255 || ip[i]<0 )
+			{
+				msg = "IP"+(i+1)+" {TAG_em_errrange} !!";
+				return msg;
+			}
+		}
+		return msg;
+}
+
+function changedefaultkey()
+{
+	alert("{TAG_defaultkeyMsg}");
+}
+
+function changewds(f)
+{
+	if(f.wdsenabled.checked){
+	alert("{TAG_wdsMsg}");
+	}
+}
+
+//End Script -->
+</script>
+
+<TAG_VAREND_JSHEAD>
+
+<body onLoad="get_cookie();show_system_error_message();" >
+<FORM name="form" method="post" action="/cgi/wireless-Ralink/wirelessHandler.cgi">
+<!--layerpopup Div-->
+<TAG_VARSTART_WAIT>
+<Div id="layerPop" style="position:absolute; left:50px; top:50px; width:300px; height:40px; z-index:0;display:none;">
+<tr>
+<lign="center" valign="middle">
+<table bgcolor="#FFFFFF" bordercolor="00A5FF" cellpadding="10" cellspacing="1" border="1" width="400" height="30">
+<tr>
+<td align="center">
+<font size="4" color="#0064CD">{TAG_ft_wait}</font><br><br>
+<marquee direction="right" width="400" height="1" scrollamount="30">
+<img src="/image/01_bar_on.png" width="100" height="5">
+</marquee>
+</table>
+</td></tr>
+</table>
+</td></tr>
+</table>
+</center>
+</Div>
+<TAG_VAREND_WAIT>
+<!-- //layerpopup div end-->
+
+<table border="0" width="550"cellspacing="0" cellpadding="2">
+<tr>
+<TAG_VARSTART_WIRELESS>
+	<td colspan="2" class="TITLE">{TAG_ft_wireless}</td>
+<TAG_VAREND_WIRELESS>
+</tr>
+<tr>
+<TAG_VARSTART_WIRELESSENABLED>
+	<td class="HEAD" width="35%">{TAG_ft_wirelessenabled}</td>
+	<td><input type="checkbox" name="wirelessenabled" value="{TAG_wirelessenabled}" {TAG_wirelessenabled_checked}></td>
+<TAG_VAREND_WIRELESSENABLED>
+</tr>
+<tr>
+<TAG_VARSTART_WDSENABLED>
+	<td class="HEAD" width="35%">{TAG_ft_wdsenabled}</td>
+	<td><input type="checkbox" name="wdsenabled" value="{TAG_wdsenabled}" {TAG_wdsenabled_checked} onClick="changewds(this.form)"></td>
+<TAG_VAREND_WDSENABLED>
+</tr>
+<tr>
+<TAG_VARSTART_SSID>
+	<td class="HEAD">{TAG_ft_ssid}</td>
+	<td><input type="text" name="ssid" size="20" maxlength="63" value="{TAG_ssid}"></td>
+<TAG_VAREND_SSID>
+</tr>
+<tr>
+<TAG_VARSTART_HIDESSID>
+	<td class="HEAD">{TAG_ft_hidessid}</td>
+	<td><input type="checkbox" name="hidessid" value="1" {TAG_hidessid_checked}></td>
+<TAG_VAREND_HIDESSID>
+</tr>
+<tr>
+<TAG_VARSTART_WIRELESSMODE>
+	<td class="HEAD">{TAG_ft_wirelessmode}</td>
+<TAG_VAREND_WIRELESSMODE>
+	<td>
+		<select size="1" name="wirelessmode"> 
+<TAG_LOOPSTART_WIRELESSMODE>
+		{TAG_wirelessmode}
+<TAG_LOOPEND_WIRELESSMODE>
+		</select>
+	</td>
+</tr>
+
+<tr>
+<TAG_VARSTART_COUNTRYREGION>
+	<td class="HEAD">{TAG_ft_countryregion}</td>
+<TAG_VAREND_COUNTRYREGION>
+	<td>
+		<select size="1" name="countryregion" onChange="checkcountryRegion()">
+<TAG_LOOPSTART_COUNTRYREGION>
+		{TAG_countryregion}
+<TAG_LOOPEND_COUNTRYREGION>
+		</select>
+	</td>
+</tr>
+
+
+<tr>
+<TAG_VARSTART_CHANNEL0>
+	<td class="HEAD">
+        <div id="channel0" style="display:none">
+        {TAG_ft_channel0}
+        </div>
+	</td>
+<TAG_VAREND_CHANNEL0>
+	<td>
+		<div id="channel0_select" style="display:none">
+		<select size="1" name="channel0">
+<TAG_LOOPSTART_CHANNEL0>
+		{TAG_channel0}
+<TAG_LOOPEND_CHANNEL0>
+		</select>
+		</div>
+	</td>
+</tr>
+
+
+<tr>
+<TAG_VARSTART_CHANNEL1>
+	<td class="HEAD">
+        <div id="channel1" style="display:none">
+        {TAG_ft_channel1}
+        </div>
+	</td>
+<TAG_VAREND_CHANNEL1>
+	<td>
+		<div id="channel1_select" style="display:none">
+		<select size="1" name="channel1">
+<TAG_LOOPSTART_CHANNEL1>
+		{TAG_channel1}
+<TAG_LOOPEND_CHANNEL1>
+		</select>
+		</div>
+	</td>
+</tr>
+
+
+<tr>
+<TAG_VARSTART_BEACONPERIOD>
+	<td class="HEAD">
+		{TAG_ft_beaconperiod}
+	</td>
+	<td>
+		<input type="text" name="beaconperiod" size="7" value="{TAG_beaconperiod}">
+	<td>
+<TAG_VAREND_BEACONPERIOD>
+</tr>
+
+<tr>
+<TAG_VARSTART_AUTHMODE>
+	<td class="HEAD">
+		<div id="authmode" style="display:block">
+		{TAG_ft_authmode}
+		<div>
+	</td>
+<TAG_VAREND_AUTHMODE>
+	<td>
+		<div id="authmode_select" style="display:block">
+		<select size="1" name="authmode" onChange="checkAuthMode()"> 
+<TAG_LOOPSTART_AUTHMODE>
+		{TAG_authmode}
+<TAG_LOOPEND_AUTHMODE>
+		</select>
+		</div>
+	</td>
+</tr>
+<tr>
+<TAG_VARSTART_ENCRYPTYPE1>
+	<td class="HEAD">
+		<div id="encryptype1" style="display:none">
+		{TAG_ft_encryptype1}
+		</div>
+	</td>
+<TAG_VAREND_ENCRYPTYPE1>
+	<td>
+		<div id="encryptype1_select" style="display:none">
+		<select size="1" name="encryptype1" onChange="checkencryptype()">
+<TAG_LOOPSTART_ENCRYPTYPE1>
+		{TAG_encryptype1}
+<TAG_LOOPEND_ENCRYPTYPE1>
+		</select>
+		</div>
+	</td>
+</tr>
+<tr>
+<TAG_VARSTART_ENCRYPTYPE2>
+	<td class="HEAD">
+		<div id="encryptype2" style="display:none">
+		{TAG_ft_encryptype2}
+		</div>
+	</td>
+<TAG_VAREND_ENCRYPTYPE2>
+	<td>
+		<div id="encryptype2_select" style="display:none">
+		<select size="1" name="encryptype2" onChange="checkencryptype1()">
+<TAG_LOOPSTART_ENCRYPTYPE2>
+		{TAG_encryptype2}
+<TAG_LOOPEND_ENCRYPTYPE2>
+		</select>
+		</div>
+	</td>
+</tr>
+<tr>
+<TAG_VARSTART_ENCRYPTYPE3>
+	<td class="HEAD">
+		<div id="encryptype3" style="display:none">
+		<font face="Arial">{TAG_ft_encryptype3}</font>
+		</div>
+		</td>
+<TAG_VAREND_ENCRYPTYPE3>
+	<td>
+		<div id="encryptype3_select" style="display:none">
+		<select size="1" name="encryptype3" >
+<TAG_LOOPSTART_ENCRYPTYPE3>
+		{TAG_encryptype3}
+<TAG_LOOPEND_ENCRYPTYPE3>
+		</select>
+		</div>
+	</td>
+</tr>
+<tr>
+<TAG_VARSTART_ENCRYPTYPE4>
+	<td class="HEAD">
+		<div id="encryptype4" style="display:none">
+		<font face="Arial">{TAG_ft_encryptype4}</font>
+		</div>
+		</td>
+<TAG_VAREND_ENCRYPTYPE4>
+	<td>
+		<div id="encryptype4_select" style="display:none">
+		<select size="1" name="encryptype4" >
+<TAG_LOOPSTART_ENCRYPTYPE4>
+		{TAG_encryptype4}
+<TAG_LOOPEND_ENCRYPTYPE4>
+		</select>
+		</div>
+	</td>
+</tr>
+<tr>
+<TAG_VARSTART_KEYTYPE1>
+	<td class="HEAD">
+		<div id="keytype1" style="display:none">
+		<font face="Arial">{TAG_ft_keytype1}</font>
+		</div>
+	</td>
+<TAG_VAREND_KEYTYPE1>
+	<td>
+		<div id="keytype1_select" style="display:none">
+		<select size="1" name="keytype1" onChange="checkKeyTypes(this,'1');">
+<TAG_LOOPSTART_KEYTYPE1>
+		{TAG_keytype1}
+<TAG_LOOPEND_KEYTYPE1>
+		</select>
+		</div>
+	</td>
+</tr>
+<tr>
+<TAG_VARSTART_KEY1>
+	<td class="HEAD">
+		<div id="key1" style="display:none">
+		<font face="Arial">{TAG_ft_key1}</font>
+		</div>
+	</td>
+	<td>
+		<div id="key1_input" style="display:none">
+		<input type="text" name="key1" size="35" value="{TAG_key1}">
+		</font>
+		</div>
+	</td>
+<TAG_VAREND_KEY1>
+</tr>
+<tr>
+<TAG_VARSTART_KEYTYPE2>
+	<td class="HEAD">
+		<div id="keytype2" style="display:none">
+		{TAG_ft_keytype2}
+		</div>
+	</td>
+<TAG_VAREND_KEYTYPE2>
+	<td>
+		<div id="keytype2_select" style="display:none">
+		<select size="1" name="keytype2" onChange="checkKeyTypes(this,'2');">
+<TAG_LOOPSTART_KEYTYPE2>
+		{TAG_keytype2}
+<TAG_LOOPEND_KEYTYPE2>
+		</select>
+		</div>
+	</td>
+</tr>
+<tr>
+<TAG_VARSTART_KEY2>
+	<td class="HEAD">
+		<div id="key2" style="display:none">
+		{TAG_ft_key2}
+		</div>
+	</td>
+	<td>
+		<div id="key2_input" style="display:none">
+			<input type="text" name="key2" size="35" value="{TAG_key2}">
+		</div>
+	</td>
+<TAG_VAREND_KEY2>
+</tr>
+<tr>
+<TAG_VARSTART_KEYTYPE3>
+	<td class="HEAD">
+		<div id="keytype3" style="display:none">
+		{TAG_ft_keytype3}
+		</div>
+	</td>
+<TAG_VAREND_KEYTYPE3>
+	<td>
+		<div id="keytype3_select" style="display:none">
+		<select size="1" name="keytype3" onChange="checkKeyTypes(this,'3');">
+<TAG_LOOPSTART_KEYTYPE3>
+		{TAG_keytype3}
+<TAG_LOOPEND_KEYTYPE3>
+		</select>
+		</div>
+	</td>
+</tr>
+<tr>
+<TAG_VARSTART_KEY3>
+	<td class="HEAD">
+		<div id="key3" style="display:none">
+		{TAG_ft_key3}
+		</div>
+	</td>
+	<td>
+		<div id="key3_input" style="display:none">
+		<input type="text" name="key3" size="35" value="{TAG_key3}">
+		</div>
+	</td>
+<TAG_VAREND_KEY3>
+</tr>
+<tr>
+<TAG_VARSTART_KEYTYPE4>
+	<td class="HEAD">
+		<div id="keytype4" style="display:none">
+		{TAG_ft_keytype4}
+		</div>
+	</td>
+<TAG_VAREND_KEYTYPE4>
+	<td>
+		<div id="keytype4_select" style="display:none">
+		<select size="1" name="keytype4" onChange="checkKeyTypes(this,'4');">
+<TAG_LOOPSTART_KEYTYPE4>
+		{TAG_keytype4}
+<TAG_LOOPEND_KEYTYPE4>
+		</select>
+		</div>
+	</td>
+</tr>
+<tr>
+<TAG_VARSTART_KEY4>
+	<td class="HEAD">
+		<div id="key4" style="display:none">
+		<font face="Arial">{TAG_ft_key4}</font>
+		</div>
+	</td>
+	<td>
+		<div id="key4_input" style="display:none">
+		<input type="text" name="key4" size="35" value="{TAG_key4}">
+		</div>
+	</td>
+<TAG_VAREND_KEY4>
+</tr>
+<tr>
+<TAG_VARSTART_DEFAULTKEYID>
+	<td class="HEAD">
+		<div id="defaultkeyid" style="display:none">
+		{TAG_ft_defaultkeyid}
+		</div>
+	</td>
+<TAG_VAREND_DEFAULTKEYID>			
+	<td>
+		<div id="defaultkeyid_select" style="display:none">
+		<select size="1" name="defaultkeyid" onChange="changedefaultkey()">
+<TAG_LOOPSTART_DEFAULTKEYID>
+		{TAG_defaultkeyid}
+<TAG_LOOPEND_DEFAULTKEYID>
+		</select>
+		</div>
+	</td>
+</tr>
+<tr>
+<TAG_VARSTART_WPAPSKKEY>
+	<td class="HEAD">
+		<div id="wpapskkey" style="display:none">
+		{TAG_ft_wpapskkey}
+		</div>
+	</td>
+	<td>
+		<div id="wpapskkey_input" style="display:none">
+		<input type="text" name="wpapskkey" size="35" value="{TAG_wpapskkey}">
+		</div>
+	</td>
+<TAG_VAREND_WPAPSKKEY>
+</tr>
+
+<tr>
+	<td colspan="2">
+<TAG_VARSTART_BUTTON>
+		<p align="center"><input class="button" type="button" name="save" value="{TAG_bt_save}" style="width: 60px" onClick="checkValue()">
+<TAG_VAREND_BUTTON>
+		</td>
+	</tr>
+</table>
+
+<input type="hidden" name="powerAction">
+</form>
+
+</body>
+
+<script language="JavaScript" type="text/javascript">
+<!-- Start Script
+//checkcountryRegion();
+
+checkchannel();
+blocking('channel'+document.forms[0].countryregion.value,true);
+blocking('channel'+document.forms[0].countryregion.value+'_select',true);
+
+checkAuthMode();
+
+<TAG_VARSTART_JS>
+
+function ViewlayerPop(){
+    document.getElementById("layerPop").style.display='inline'
+}
+	
+function checkValue()
+{
+	var msg="",msg1="";
+	var wireconfirm_msg = '{TAG_cf_reboot}';
+	var wireenabled_changed;
+	var f = document.forms[0];
+	
+	if( (f.wirelessenabled.checked) && (f.wirelessenabled.value == 0) )
+	{
+		f.wirelessenabled.value = '1';
+		wireenabled_changed = true;
+	} else if( (!f.wirelessenabled.checked) && (f.wirelessenabled.value == 1) ) {
+		f.wirelessenabled.value = '0';
+		wireenabled_changed = true;
+	}
+
+
+	if ((f.wdsenabled.checked) && (f.wdsenabled.value==0)){
+		f.wdsenabled.value = '1';
+	}else if ((!f.wdsenabled.checked) && (f.wdsenabled.value==1)){
+		f.wdsenabled.value = '0';
+	}
+
+		
+	if(wireenabled_changed) {
+		if ( confirm(wireconfirm_msg) == true)
+		{
+			f.powerAction.value = 1;
+		} else {
+			f.powerAction.value = 0;
+			f.wirelessenabled.value = 1 - f.wirelessenabled.value;
+			f.wirelessenabled.click();
+			return false;
+		}
+	}
+
+
+
+	if (f.ssid.value==null || f.ssid.value==""){
+		msg="{TAG_em_ssid}";
+	}else{
+		msg="";
+	}
+
+	if (msg.length<=0){
+		msg=checkBeaconPeriodValue("{TAG_em_beaconperiod}");
+	}
+
+	if(f.authmode.value == 'WEPAUTO' && msg.length<=0)
+	    msg=checkWEPKeyValue("{TAG_em_wepkey}");
+	
+	if(f.authmode.value == 'WPAPSK' && msg.length<=0)
+	    msg=checkWPAPSKValue("{TAG_em_wpapskkey}");
+
+	if(f.authmode.value == 'WPA2PSK' && msg.length<=0)
+	    msg=checkWPAPSKValue("{TAG_em_wpapskkey}");
+		
+	if(f.authmode.value == 'WPAPSKWPA2PSK' && msg.length<=0)
+	    msg=checkWPAPSKValue("{TAG_em_wpapskkey}");
+	
+
+	if(msg.length > 0)
+	{
+		alert(msg);
+		focus.focus();
+		focus.select();
+		return false;
+	}
+	
+	if (confirm("{TAG_cf_message}"))
+	{
+		ViewlayerPop();
+		document.form.submit();
+		return true;
+	}
+}
+<TAG_VAREND_JS>
+//End Script -->
+</script>
+</html>

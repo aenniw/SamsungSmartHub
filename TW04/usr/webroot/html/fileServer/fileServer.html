@@ -1,0 +1,339 @@
+<html>
+
+<head>
+<TAG_VARSTART_CHARSET>
+<meta http-equiv="Content-Type" content="text/html; charset={TAG_charset}">
+<TAG_VAREND_CHARSET>
+<title>File Server Setting</title>
+<link rel="StyleSheet" type="text/css" href="/css/storlib.css">
+</head>
+
+
+<script language="JavaScript" type="text/javascript" src="/javascript/storlib.js"></script>
+<script language="JavaScript" type="text/javascript">
+<!-- Start Script
+<TAG_VARSTART_ISFTP>             
+var is_ftp = {TAG_isftp};
+<TAG_VAREND_ISFTP>             
+
+<TAG_VARSTART_SERVERCODEPAGE>             
+var server_codepage = "{TAG_server_codepage}";
+<TAG_VAREND_SERVERCODEPAGE>             
+
+<TAG_VARSTART_ISNFS>             
+var is_nfs = {TAG_isnfs};
+<TAG_VAREND_ISNFS>             
+
+<TAG_VARSTART_DISKTYPE>             
+var disk_type = "{TAG_disktype}";
+<TAG_VAREND_DISKTYPE>             
+
+<TAG_VARSTART_QUOTA>
+var have_quota = {TAG_havequota}
+<TAG_VAREND_QUOTA>
+
+function show_system_error_message()
+{
+<TAG_VARSTART_ERR_MSG>
+	var message = "{TAG_err_msg}";
+<TAG_VAREND_ERR_MSG>
+
+	if (message != "")
+	{
+		alert(message);
+	}
+}
+
+function enableSamba()
+{
+	document.form.charset.value=server_codepage;
+
+	if(document.form.Samba_enabled.checked == true)
+	{
+		document.form.workgroup.disabled = false;
+		document.form.serverString.disabled = false;
+		document.form.winsIpAddr_1.disabled = false;
+		document.form.winsIpAddr_2.disabled = false;
+		document.form.winsIpAddr_3.disabled = false;
+		document.form.winsIpAddr_4.disabled = false;
+	}
+	else
+	{
+		document.form.workgroup.disabled = true;
+		document.form.serverString.disabled = true;
+		document.form.winsIpAddr_1.disabled = true;
+		document.form.winsIpAddr_2.disabled = true;
+		document.form.winsIpAddr_3.disabled = true;
+		document.form.winsIpAddr_4.disabled = true;
+	}
+}
+
+function upperCase()
+{
+	document.form.workgroup.value = document.form.workgroup.value.toUpperCase();
+}
+
+function enableFTP()
+{
+	if (is_ftp)
+	{
+		if(document.form.Ftp_enabled.checked == true)
+		{
+			document.form.portNumber.disabled = false;
+			document.form.tls_enabled.disabled = false;
+		}
+		else
+		{
+			document.form.portNumber.disabled = true;
+			document.form.tls_enabled.checked = false;
+			document.form.tls_enabled.disabled = true;
+		}
+	}
+}
+
+function enableGuest()
+{
+	if(document.form.GuestShare_enabled.checked == true)
+	{
+		if (have_quota)
+		{
+			document.form.allowuploads.disabled = false;
+			enableAllowUploads();
+			enableQuota();
+		}
+	}
+	else
+	{
+		if (have_quota)
+		{
+			document.form.allowuploads.disabled = true;
+			document.form.quota.disabled = true;
+		}
+	}
+}
+
+function enableAllowUploads()
+{
+	if(document.form.allowuploads.checked == true)
+	{
+		document.form.quota.disabled = false;
+	}
+	else
+	{
+		document.form.quota.disabled = true;
+	}
+}
+
+function enableQuota()
+{
+	if (have_quota)
+	{
+		if (disk_type == "vfat" || disk_type == "fuseblk" || disk_type == "ufsd" || disk_type == "msdos")
+		{
+			document.form.allowuploads.disabled = true;
+			document.form.quota.disabled = true;
+		}
+		else
+		{
+			document.form.allowuploads.disabled = false;
+			document.form.quota.disabled = false;
+		}
+	}
+}
+//End Script -->
+</script>
+
+
+<body onLoad="get_cookie();enableSamba();enableFTP();enableGuest();show_system_error_message()">
+<form name="form" method="post" action="/cgi/fileServer/fileServerHandler.cgi">
+
+<table border="0" width="600" cellspacing="0" cellpadding="3">
+<tr>
+<TAG_VARSTART_NAME>
+	<td colspan="2" class="TITLE">{TAG_ft_setting}</td>
+<TAG_VAREND_NAME>
+</tr>
+<tr>
+<TAG_VARSTART_CODEPAGE>
+		<td class="HEAD">{TAG_ft_codepage}</td>
+<TAG_VAREND_CODEPAGE>
+		<td class="CONTENT"><select name="charset" value="1">
+<TAG_LOOPSTART_LANGUAGE_LIST>		
+		<option value="{TAG_language_value}">{TAG_language_name}</option>;<TAG_LOOPEND_LANGUAGE_LIST>		
+		</select></td>
+</tr>
+
+
+<TAG_VARSTART_SAMBA>
+<tr>
+	<td colspan="2" class="TITLE1">{TAG_ft_win}</td>
+</tr>
+<tr>
+	<td class="HEAD">{TAG_ft_enable}</td>
+	<td class="CONTENT"><input type="checkbox" name="Samba_enabled" value="1" {TAG_Samba_enabled} onclick="enableSamba()"></td>
+</tr>
+<tr>
+	<td class="HEAD">{TAG_ft_workgroup}</td>
+	<td class="CONTENT">&nbsp;<input type="text" name="workgroup" value="{TAG_workgroup}" size="20" maxlength="20" onchange="upperCase()"></td>
+</tr>
+<tr>
+	<td class="HEAD">{TAG_ft_desc}</td>
+	<td class="CONTENT">&nbsp;<input type="text" name="serverString" value="{TAG_serverString}" size="50" maxlength="64"></td>
+</tr>
+<tr>
+	<td class="HEAD">{TAG_ft_wins}</td>
+	<td class="CONTENT">&nbsp;<input type="text" name="winsIpAddr_1" value="{TAG_winsIpAddr_1}" size="3" maxlength="3">.<input type="text" name="winsIpAddr_2" value="{TAG_winsIpAddr_2}" size="3" maxlength="3">.<input type="text" name="winsIpAddr_3" value="{TAG_winsIpAddr_3}" size="3" maxlength="3">.<input type="text" name="winsIpAddr_4" value="{TAG_winsIpAddr_4}" size="3" maxlength="3"></td>
+</tr>
+<TAG_VAREND_SAMBA>
+<TAG_VARSTART_FTP>
+<script language="javascript">
+if (is_ftp)
+{
+	with(document)
+	{
+		write("<tr>");
+		write("<td colspan=\"2\" class=\"TITLE1\">{TAG_ft_ftp}</td>");
+		write("</tr>");
+		write("<tr>");
+		write("<td class=\"HEAD\">{TAG_ft_enable}</td>");
+		write("<td class=\"CONTENT\"><input type=\"checkbox\" name=\"Ftp_enabled\" value=\"1\" {TAG_Ftp_enabled} onclick=\"enableFTP();\"></td>");
+		write("</tr>");
+		write("<tr>");
+		write("<td nowrap class=\"HEAD\">{TAG_ft_tls_enable}</td>");
+		write("<td class=\"CONTENT\">&nbsp;<input type=\"checkbox\" name=\"tls_enabled\" value=\"1\" {TAG_tls_enabled} size=\"5\" maxlength=\"5\"></td>");
+		write("</tr>");
+		write("<tr>");
+		write("<td class=\"HEAD\">{TAG_ft_port}</td>");
+		write("<td class=\"CONTENT\">&nbsp;<input type=\"text\" name=\"portNumber\" value=\"{TAG_portNumber}\" size=\"5\" maxlength=\"5\"></td>");
+		write("</tr>");
+	}
+<TAG_VAREND_FTP>
+}
+</script>
+<TAG_VARSTART_NFS>
+<script language="javascript">
+if (is_nfs)
+{
+	with(document)
+	{	
+		write("<tr>");
+		write("<td colspan=\"2\" class=\"TITLE1\">{TAG_ft_nfs}</td>");
+		write("</tr>");
+		write("<tr>");
+		write("<td class=\"HEAD\">{TAG_ft_enable}</td>");
+		write("<td class=\"CONTENT\"><input type=\"checkbox\" name=\"NFS_enabled\" value=\"1\" {TAG_NFS_enabled}></td>");
+		write("</tr>");
+	}
+}
+</script>
+<TAG_VAREND_NFS>
+<TAG_VARSTART_GUESTSHARE>
+<tr>
+	<td colspan="2" class="TITLE1">{TAG_ft_guest}</td>
+</tr>
+<tr>
+	<td class="HEAD">{TAG_ft_enable}</td>
+	<td class="CONTENT"><input type="checkbox" name="GuestShare_enabled" value="1" {TAG_GuestShare_enabled} onclick="enableGuest()"></td>
+</tr>
+<script language="javascript">
+if (have_quota)
+{
+	document.write("<tr>");
+	document.write("<td class=\"HEAD\">{TAG_ft_enableQuota}</td>");
+	document.write("<td class=\"CONTENT\"><input type=\"checkbox\" name=\"allowuploads\" value=\"1\" {TAG_allowuploads} onclick=\"enableAllowUploads()\"></td>");
+	document.write("</tr>");
+	document.write("<tr>");
+	document.write("<td class=\"HEAD\">{TAG_ft_guestQuota}</td>");
+	document.write("<td class=\"CONTENT\">&nbsp;<input type=\"text\" name=\"quota\" value=\"{TAG_guest_quota}\" size=\"9\" maxlength=\"9\">&nbsp;MB</td>");
+	document.write("</tr>");
+}
+<TAG_VAREND_GUESTSHARE>
+</script>
+<tr>
+	<td colspan="2">
+<TAG_VARSTART_BUTTON>
+		<p align="center"><input class="button" type="button" value="{TAG_bt_save}" name="save" style="width: 60px" onClick="checkValue()">
+<TAG_VAREND_BUTTON>
+		</td>
+	</tr>
+</table>
+<input type="hidden" name="test" value="1">
+</form>
+</body>
+
+
+<script language="JavaScript" type="text/javascript">
+<!-- Start Script
+<TAG_VARSTART_JS>
+
+var msg_blank = " {TAG_msg_blank}";
+var msg_check_invalid = " {TAG_msg_check_invalid}";
+var msg_greater = " {TAG_msg_greater} ";
+var msg_less = " {TAG_msg_less} ";
+var disk_size = {TAG_disksize}
+
+function checkValue()
+{
+	var msg;
+
+	if(document.form.Samba_enabled.checked == true)
+	{
+		msg = storlib_checkBlank(document.form.workgroup, "{TAG_ft_win}/{TAG_ft_workgroup}", true, msg_blank);
+		if(msg.length > 0)
+		{
+			alert(msg);
+			return false;
+		}
+
+		if(document.form.serverString.value != "")
+		{
+			msg = "{TAG_em_workgroup}";
+			for(var i = 0; i < document.form.serverString.value.length; i++)
+			{
+				var ch = document.form.serverString.value.charAt(i);
+				if(!isAlpha(ch) && !isNumeric(ch) && !isDesc(ch))
+				{
+					alert(msg);
+					document.form.serverString.focus();
+					return false;
+				}
+			}
+		}
+
+		msg = storlib_checkIpValue(document.form.winsIpAddr_1, document.form.winsIpAddr_2, document.form.winsIpAddr_3, document.form.winsIpAddr_4, 0, 255, 0, 255, 0, 255, 0, 255, false, "{TAG_em_wins}", msg_blank, msg_check_invalid, msg_greater, msg_less)
+		if(msg.length > 0)
+		{
+			alert(msg);
+			return false;
+		}
+	}
+
+	if (is_ftp)
+	{
+		msg = storlib_checkInt(document.form.portNumber, "{TAG_ft_ftp}/{TAG_ft_port}", 0, 65535, document.form.Ftp_enabled.checked, msg_blank, msg_check_invalid, msg_greater, msg_less);
+		if(msg.length > 0)
+		{
+			alert(msg);
+			return false;
+		}
+	}
+	
+	if (have_quota)
+	{
+		msg = storlib_checkInt(document.form.quota, "{TAG_ft_guest}/{TAG_ft_guestQuota}", 1, disk_size, (document.form.GuestShare_enabled.checked && document.form.allowuploads.checked), msg_blank, msg_check_invalid, msg_greater, msg_less);
+		if(msg.length > 0)
+		{
+			alert(msg);
+			return false;
+		}
+	}
+	document.form.submit();
+}
+
+<TAG_VAREND_JS>
+//End Script -->
+</script>
+
+
+</html>
+

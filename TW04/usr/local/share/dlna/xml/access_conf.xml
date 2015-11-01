@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<accessConfigRoot>
+<dmsConfig>
+<titlePhoto>Photo</titlePhoto>
+<titlePhototAll>All Photos</titlePhototAll>
+<titlePhotoAlbum>Album</titlePhotoAlbum>
+<titlePhotoDate>Date</titlePhotoDate>
+<titlePhotoYear>Year</titlePhotoYear>
+<titlePhotoFolder>Folder</titlePhotoFolder>
+<titleMusic>Music</titleMusic>
+<titleMusicAll>All Music</titleMusicAll>
+<titleMusicGenre>Genre/Song</titleMusicGenre>
+<titleMusicGenreAlbum>Genre/Album</titleMusicGenreAlbum>
+<titleMusicGenreArtist>Genre/Artist</titleMusicGenreArtist>
+<titleMusicAlbum>Album</titleMusicAlbum>
+<titleMusicArtist>Artist</titleMusicArtist>
+<titleMusicArtistIndex>Artist Index</titleMusicArtistIndex>
+<titleMusicArtistAlbum>Artist/Album</titleMusicArtistAlbum>
+<titleMusicRating>Rating</titleMusicRating>
+<titleMusicDate>By Date</titleMusicDate>
+<titleMusicYear>By Year</titleMusicYear>
+<titleMusicFolder>Folder</titleMusicFolder>
+<titleMusicPlaylist>Playlist</titleMusicPlaylist>
+<titleVideo>Video</titleVideo>
+<titleVideoAll>All Video</titleVideoAll>
+<titleVideoGenre>Genre</titleVideoGenre>
+<titleVideoAlbum>Album</titleVideoAlbum>
+<titleVideoActor>Actor</titleVideoActor>
+<titleVideoRating>Rating</titleVideoRating>
+<titleVideoDate>Date</titleVideoDate>
+<titleVideoYear>Year</titleVideoYear>
+<titleVideoFolder>Folder</titleVideoFolder>
+<titleUnknown>Unknown</titleUnknown>
+<titleOther>Other</titleOther>
+<refreshFreq>5000</refreshFreq>
+<setTheSharePRI>1</setTheSharePRI>
+<enabled>1</enabled>
+<indexModeManual>0</indexModeManual>
+<sharePRI>2</sharePRI>
+<shareMode>1</shareMode>
+<shareOption>1</shareOption>
+<xmmrr>0</xmmrr>
+<storageMessageFifo>/tmp/dms_ipc</storageMessageFifo>
+<!-- SSDP M-Search Params, configure these values according to the requirements but please ensure you do not violate specifications -->
+<ssdpNotifyInterval>870</ssdpNotifyInterval>   		<!-- M-Search Advertisements Interval (Heart-Beat) -->
+<ssdpNotifyMsgDelay>200</ssdpNotifyMsgDelay>            <!-- Delay between each copy of m-search advertisement -->
+<ssdpNotifyMaxAge>1800</ssdpNotifyMaxAge>               <!-- Cache-Control Max-Age -->
+<ssdpNotifyMsgCopyCount>3</ssdpNotifyMsgCopyCount>      <!-- Number of M-Search Message copies -->
+</dmsConfig>
+<usbGeneralConfig>
+<contentsFileName>access.idx</contentsFileName>
+<maxContents>5000</maxContents>
+<usbMountPath>/mnt/usbs</usbMountPath>
+<netInterface>lo</netInterface>
+<netInterface>eth0</netInterface>
+<netInterface>ra0</netInterface>
+</usbGeneralConfig>
+<web>
+<!-- If Access webserver (Dahlia) is used, please ensure the portnumber in presentation url match with webServerPort tag value -->
+<presentationURL>http://127.0.0.1:8888/cgi/menu.cgi</presentationURL>
+<webpageConfig>
+<maxContents>50</maxContents>
+<maxContentsPerScreen>50</maxContentsPerScreen>
+<webServerPort>8888</webServerPort>
+<maxContentsPerScreen_webui>25</maxContentsPerScreen_webui>
+<maxContentPerPage>5</maxContentPerPage>
+<maxContentList>50</maxContentList>
+</webpageConfig>
+</web>
+<usbConfigPublish/>
+</accessConfigRoot>

@@ -1,0 +1,1 @@
+<item id="saveConfig" label="ft_saveConfig" description="" url="cgi/saveConfig/saveConfig.cgi" parent="maintenance" order="40"/>

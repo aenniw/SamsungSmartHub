@@ -1,0 +1,173 @@
+<html>
+
+<head>
+<TAG_VARSTART_CHARSET>
+<meta http-equiv="Content-Type" content="text/html; charset={TAG_charset}">
+<TAG_VAREND_CHARSET>
+<title>Add New Group</title>
+<link rel="StyleSheet" type="text/css" href="/css/storlib.css">
+</head>
+
+
+<script language="JavaScript" type="text/javascript" src="/javascript/storlib.js"></script>
+<script language="JavaScript" type="text/javascript">
+<!-- Start Script
+
+function showGroup()
+{
+	var index = document.form.group_select.selectedIndex;
+	var len = 0;
+
+	if ((index >= 0) && (index < document.form.group_select.options.length - 1))
+	{
+		document.form.groupname.value = document.form.group_select.options[index].text;
+		document.form.groupname.disabled = true;
+	}
+	else if (index == document.form.group_select.options.length - 1)
+	{
+		clearForm();
+	}
+	else
+	{
+		document.form.groupname.value = "";
+	}
+	document.form.group_select.focus();
+}
+
+function show_system_error_message()
+{
+<TAG_VARSTART_ERR_MSG>
+	var message = "{TAG_err_msg}";
+<TAG_VAREND_ERR_MSG>
+
+	if (message != "")
+	{
+		alert(message);
+	}
+}
+//end script  -->
+</script>
+
+
+<body onLoad="get_cookie();show_system_error_message()">
+<form name="form" method="post" action="/cgi/group/groupHandler.cgi" >
+<table border="0" width="600" cellspacing="0" cellpadding="2">
+<tr>
+<TAG_VARSTART_GROUPMANAGEMENT>
+	<td colspan="2" class="TITLE">{TAG_ft_groupManagement}</td>
+<TAG_VAREND_GROUPMANAGEMENT>
+</tr>
+<tr>
+<TAG_VARSTART_EXISTINGUSERS>
+	<td class="HEAD">{TAG_ft_existingGroups}</td>
+<TAG_VAREND_EXISTINGUSERS>
+	<td width="428" class="CONTENT">
+			<select size="6" name="group_select" onChange="showGroup();">
+<TAG_LOOPSTART_GROUP_SELECT>
+				<option>{TAG_existGroup}</option>
+<TAG_LOOPEND_GROUP_SELECT>
+				<option>===== END LIST =====</option>
+				</select></font></td>
+</tr>
+<tr><td colspan=2>&nbsp;</td></tr>
+<tr>
+<TAG_VARSTART_IDINFO>
+	<td class="HEAD">{TAG_ft_groupName}</td>
+<TAG_VAREND_IDINFO>
+	<td width="428" class="CONTENT"><input type="text" name="groupname" size="20"></td>
+</tr>
+<tr>
+	<td colspan="2">
+		<p align="center">
+<TAG_VARSTART_BUTTON>
+		<input class="button" type="button" value="{TAG_ft_save}" onClick="checkValue()">&nbsp;
+		<input class="button" type="button" value="{TAG_ft_clearForm}" onClick="clearForm()">&nbsp;
+		<input class="button" type="button" value="{TAG_ft_members}" onClick="members();">&nbsp;
+		<input class="button" type="button" value="{TAG_ft_delGroup}" onClick="delete_group()">
+<TAG_VAREND_BUTTON>
+	</td>
+</tr>
+</table>
+</form>
+</body>
+
+
+<script language="JavaScript" type="text/javascript">
+<!-- Start Script
+<TAG_VARSTART_JS>
+
+var msg_no_group = "{TAG_ms_msg_no_group}";
+var msg_blank = " {TAG_msg_blank}";
+
+function checkValue()
+{
+	var msg = storlib_checkBlank(document.form.groupname, "{TAG_ft_groupName}", true, msg_blank);
+
+	if(document.form.groupname.disabled == true)
+	{
+		return false;
+	}
+
+	if(msg.length > 0)
+	{
+		alert(msg);
+		return false;
+	}
+
+	var s1=  document.form.groupname.value.toLowerCase();
+	document.form.groupname.value = s1;
+
+	document.form.submit();
+
+}
+
+function clearForm()
+{
+	document.form.group_select.selectedIndex = document.form.group_select.options.length - 1;
+	document.form.groupname.value = "";
+	document.form.groupname.disabled = false;
+}
+
+function members()
+{
+	document.form.groupname.disabled = false;
+
+	var index = document.form.group_select.selectedIndex;
+	var name = document.form.groupname;
+
+	if(index < 0||index >= (document.form.group_select.options.length - 1)) {
+		alert(msg_no_group);
+		return ;
+	}
+	var para = "name=" + name.value;
+	var target = "/cgi/group/groupMembers.cgi?" + para;
+
+	gotoUrl(target);
+
+}
+
+function delete_group()
+{
+	document.form.groupname.disabled = false;
+
+	var index = document.form.group_select.selectedIndex;
+	var name = document.form.groupname;
+	
+	if(index < 0||index >= (document.form.group_select.options.length - 1)) {
+		alert(msg_no_group);
+		return ;
+	}
+
+	if (confirm("{TAG_cf_delConfirm}") == true)
+	{
+		var para = "name=" + name.value;
+		var target = "/cgi/group/groupDeleteHandler.cgi?" + para;
+
+		gotoUrl(target);
+	}
+}
+
+<TAG_VAREND_JS>
+//End Script -->
+</script>
+</html>

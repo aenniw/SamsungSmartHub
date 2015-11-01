@@ -1,0 +1,6 @@
+<class name="System" namespace="Configuration" version="1.0">
+  <property name="factoryReset" type="int" default="0"/>
+  <property name="saveConfig" type="int"  default="0"/>
+  <property name="restoreConfig" type="int" default="0"/>
+  <property name="reset_admin" type="int" default="0"/>
+</class>

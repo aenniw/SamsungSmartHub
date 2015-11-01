@@ -1,0 +1,1 @@
+<item id="fileServer" label="nv_fileServer" description="" url="cgi/fileServer/fileServer.cgi" parent="file_print" order="10"/>

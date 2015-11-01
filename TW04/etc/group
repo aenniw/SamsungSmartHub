@@ -1,0 +1,7 @@
+root:x:0:
+wheel:x:10:
+lp:x:7:
+nobody:x:65535:guest
+users:x:100:nobody,root
+mysql:x:6000:
+daemon:x:7000:

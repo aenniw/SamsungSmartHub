@@ -1,0 +1,10 @@
+#!/bin/sh
+
+echo "0,1000,fd" >/tmp/ptable
+echo ",-500,fd" >>/tmp/ptable
+echo ",,82"  >>/tmp/ptable
+
+sfdisk -uM --force /dev/hda </tmp/ptable
+sfdisk -uM --force /dev/hdb </tmp/ptable
+sfdisk -uM --force /dev/hdc </tmp/ptable
+sfdisk -uM --force /dev/hdd </tmp/ptable

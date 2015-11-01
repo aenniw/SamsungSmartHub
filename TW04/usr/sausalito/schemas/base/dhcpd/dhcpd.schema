@@ -1,0 +1,26 @@
+<class name="System" namespace="Dhcp" version="1.0">
+  <property name="refresh" type="scalar"/>
+  <property name="notstart" type="int" default="1" />
+  <property name="enabled" type="boolean" default="0"/>
+</class>
+
+<class name="DhcpParam" namespace="" version="1.0">
+  <property name="domainname" type="domainname" optional="true" />
+  <property name="enabled" type="boolean" default="0"/>
+  <property name="gateway" type="ipaddr" optional="true" />
+  <property name="dns" type="scalar" optional="true" /> 
+  <property name="netmask" type="ipaddr" optional="true" />
+  <property name="lease" type="int" default="86400" />
+  <property name="ipaddrlo" type="scalar"  /> 
+  <property name="ipaddrhi" type="scalar" /> 
+</class>
+
+<class name="DhcpStatic" namespace="" version="1.0">
+  <property name="name" type="ipaddr"  /> 
+  <property name="mac" type="scalar" /> 
+</class>
+
+<class name="ErrorNotification" namespace="Dhcp" version="1.0">
+  <property name="enabled" type="boolean"/>
+</class>
+

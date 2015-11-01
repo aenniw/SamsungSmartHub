@@ -1,0 +1,95 @@
+<html>
+
+<head>
+<TAG_VARSTART_CHARSET>
+<meta http-equiv="Content-Type" content="text/html; charset={TAG_charset}">
+<TAG_VAREND_CHARSET>
+<title>System Information</title>
+<link rel="StyleSheet" type="text/css" href="/css/storlib.css">
+<script language="JavaScript" type="text/javascript" src="/javascript/storlib.js"></script>
+<script language="javascript">
+
+//disk = 1: nodisk ; disk = 2 : newdisk ; disk = 3 : faildisk; 
+<TAG_VARSTART_DISK>
+var disk = {TAG_disk};
+<TAG_VAREND_DISK>
+
+function get_cookie()
+{
+		var allcookies = document.cookie;
+ 		var pos = allcookies.indexOf("LoginUser=");
+ 		if (pos == -1)
+ 		location = "/index.html";
+}
+
+</script>
+</head>
+
+<body onLoad="get_cookie();">
+<table border="0" width="550" cellspacing="0" cellpadding="2">
+<TAG_VARSTART_SYS_INFO>
+<tr><td colspan="3" class="TITLE">{TAG_ft_systemInformation}</td></tr>
+<tr><td class="HEAD">{TAG_ft_productName}</td>
+    <td class="CONTENT">{TAG_product_name}</td>
+</tr>
+<tr><td class="HEAD">{TAG_ft_modelName}</td>
+	<td class="CONTENT">{TAG_ft_model_name}</td>
+</tr>
+<!--
+<tr><td class="HEAD">{TAG_ft_hardwareName}</td>
+    <td>&nbsp;</td>
+    <td>{TAG_hardware_name}</td>
+</tr>
+-->
+<tr><td class="HEAD">{TAG_ft_firmwareVersion}</td>
+    <td class="CONTENT">{TAG_software_version}</td>
+</tr>
+<!--
+<tr><td class="HEAD">{TAG_ft_hardwareVersion}</td>
+    <td>&nbsp;</td>
+    <td>{TAG_hardware_version}</td>
+</tr>
+<tr><td class="HEAD">{TAG_ft_productVendor}</td>
+    <td class="CONTENT">{TAG_product_vendor}</td>
+</tr>
+-->
+<tr><td class="HEAD">{TAG_ft_ip}</td>
+    <td class="CONTENT">{TAG_ip_address}</td>
+</tr>
+
+<tr><td colspan=2>&nbsp;</td></tr>
+<tr><td colspan="3" class="TITLE1">{TAG_ft_hddInformation}</td></tr>
+<tr>
+	<td class="HEAD">{TAG_ft_hddname}</td>
+	<td class="CONTENT">{TAG_hdd_name}</td>
+</tr>
+<!--
+<tr>
+	<td class="HEAD">{TAG_ft_hddavail} / {TAG_ft_hddtotal}</td>
+	<td class="CONTENT">{TAG_hdd_avail} / {TAG_hdd_total}&nbsp;&nbsp;{TAG_ft_mega}</td>
+</tr>
+-->
+
+<tr>
+	<td class="HEAD" valign=top>Available / Total Capacity</td>
+	<td class="CONTENT">{TAG_usbs_usage}</td>
+</tr>
+
+<tr><td colspan=2>&nbsp;</td></tr>
+<tr><td colspan="3" class="TITLE1">{TAG_ft_oddInformation}</td></tr>
+<tr>
+	<td class="HEAD">{TAG_ft_oddProfile}</td>
+	<td class="CONTENT">{TAG_odd_profile}</td>
+</tr>
+<!--
+<tr>
+	<td class="HEAD">{TAG_ft_oddAvail} / {TAG_ft_oddTotal}</td>
+	<td class="CONTENT">{TAG_odd_avail} / {TAG_odd_total}&nbsp;&nbsp;{TAG_ft_mega2}</td>
+</tr>
+-->
+
+<TAG_VAREND_SYS_INFO>
+</table>
+	
+</body>
+</html>

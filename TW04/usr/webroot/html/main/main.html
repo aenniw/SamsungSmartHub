@@ -1,0 +1,79 @@
+<html>
+
+<head>
+<TAG_VARSTART_CHARSET>
+<meta http-equiv="Content-Type" content="text/html; charset={TAG_charset}">
+<TAG_VAREND_CHARSET>
+<title>Main</title>
+<link rel="StyleSheet" type="text/css" href="/css/storlib.css">
+<script language="JavaScript" type="text/javascript" src="/javascript/storlib.js"></script>
+<STYLE type="text/css">
+IMG { border:none }
+BODY { background-color : #FFFFFF0;
+background-image : url(/image/00_WebUI.png);
+background-repeat: no-repeat; }
+</STYLE>
+<script language="javascript">
+
+//hdd = 1 : nohdd ; hdd = 2 : newhdd;
+<TAG_VARSTART_HDD>
+var hdd = {TAG_hdd};
+<TAG_VAREND_HDD>
+
+//disc = 3 : nodisc ; disc = 4 : newdisc;
+<TAG_VARSTART_ODD>
+var odd = {TAG_odd};
+<TAG_VAREND_ODD>
+
+//internet = 5 : nointernet ; internet =6 : newinternet;
+<TAG_VARSTART_INTERNET>
+var internet = {TAG_internet};
+<TAG_VAREND_INTERNET>
+
+function get_cookie()
+{
+		var allcookies = document.cookie;
+ 		var pos = allcookies.indexOf("LoginUser=");
+ 		if (pos == -1)
+ 		location = "/index.html";
+}
+
+</script>
+</head>
+
+<body onLoad="get_cookie();">
+<table border="0" width="350" cellspacing="0" cellpadding="2"/>
+<TAG_VARSTART_MAIN>
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+<tr>
+<td width=100% align=right>
+<a href="/cgi/information/information.cgi"><img src="/image/01_information.png" width="139" height="168">
+</td>
+
+<TAG_VAREND_MAIN>
+
+<script language="javascript">
+<TAG_VARSTART_JS>
+	if (hdd == 1)
+		document.write("<td width=139><img src=\"/image/02_HDD_off.png\" width=\"139\" height=\"168\"></td>");
+	else if (hdd == 2)
+		document.write("<td width=139><img src=\"/image/02_HDD_on.png\" width=\"139\" height=\"168\"></td>");
+	
+	if (odd == 3 )
+		document.write("<td width=139><img src=\"/image/03_ODD_off.png\" width=\"139\" height=\"168\"></td>");
+	else if (odd == 4)
+		document.write("<td width=139><img src=\"/image/03_ODD_on.png\" width=\"139\" height=\"168\"></td>");
+
+	if (internet == 5)
+		document.write("<td align=right><img src=\"/image/04_wifi_off.png\" width=\"139\" height=\"168\"></td>");
+	else if (internet == 6)
+		document.write("<td align=right><img src=\"/image/04_wifi_on.png\" width=\"139\" height=\"168\"></td>");
+<TAG_VAREND_JS>
+</script>		
+</tr>
+</table>
+</body>
+
+</html>

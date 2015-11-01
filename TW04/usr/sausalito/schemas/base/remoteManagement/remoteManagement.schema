@@ -1,0 +1,3 @@
+<class name="System" namespace="RemoteManagement" version="1.0">
+	<property name="port" type="int" default="8080"/>
+</class>

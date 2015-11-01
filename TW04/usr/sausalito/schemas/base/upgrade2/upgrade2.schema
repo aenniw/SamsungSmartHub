@@ -1,0 +1,7 @@
+<class name="System" namespace="FWUpdate" version="1.0">
+  <property name="upgrade" type="int" default="0"/>
+  <property name="status" type="scalar"/>
+  <property name="percent" type="int"/>
+</class>
+
+

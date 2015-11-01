@@ -1,0 +1,10 @@
+<class name="System" namespace="Time" version="1.0">
+        <property name="epochTime" type="int" default="0"/>
+        <property name="epochDate" type="scalar"/>
+        <property name="ntpEnabled" type="boolean" default="0"/>
+        <property name="ntpServer" type="scalar" default="none"/>
+        <property name="ntpFromUser" type="boolean" default="0"/>
+	<property name="ntpServerList" type="scalar" default="&amp;time.windows.com&amp;time.nist.gov&amp;" array="yes" optional="true"/>
+        <property name="timeZone" type="scalar" default="Taipei"/>
+        <property name="renew" type="scalar"/>
+</class>

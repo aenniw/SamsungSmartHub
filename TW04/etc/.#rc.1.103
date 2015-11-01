@@ -1,0 +1,404 @@
+#!/bin/sh
+
+HOME=/
+PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/hddapp/bin:/usr/hddapp/sbin:/usr/local/bin:/usr/local/sbin
+export HOME PATH
+
+echo "Mounting proc filesystem..."
+mount -n -t proc /proc /proc
+
+##debug_Aaron on 09/28/2005, for linux 2.6
+uname -r | grep "2.6"
+if [ $? = 0 ]; then
+	mkdir -p /sys
+	mount -n -t sysfs /sys /sys
+	mount -t usbfs usbfs /proc/bus/usb 
+else
+	##debug_Aaron on 02/01/2005, support USB device filesystem
+	mount -t usbdevfs usbdevfs /proc/bus/usb 
+fi
+
+. /etc/rc.conf
+
+echo "Mounting tmpfs to copy file from flash..."
+mkdir -p /tmpmnt
+##charles_TU, 11/15/2005, increase size from 20m to 30m for kernel 2.6
+uname -r | grep "2.6"
+if [ $? = 0 ]; then
+	mount -t tmpfs tmpfs /tmpmnt -o size=30m
+else
+	mount -t tmpfs tmpfs /tmpmnt -o size=20m
+fi
+
+ConfList="/etc/rc.conf"
+for ThisConfig in $ConfList;
+do
+	if [ -r "$ThisConfig" ]; then
+		. $ThisConfig
+	fi
+done
+
+
+##debug_Aaron on 07/24/2006 for Router only 
+if [ $RouterOnly != "Yes" ]; then
+	##debug_Aaron, for hard disk boot up
+	echo HardDiskBootUp=$HardDiskBootUp
+	if [ $HardDiskBootUp = "YES" ]; then
+        	echo "Boot up from hard disk"
+        	if [ -e /etc/rc.RAID.start ]; then
+  			sh /etc/rc.RAID.start
+        	fi
+	else
+        	echo "Boot up from flash"
+		if [ -e /etc/rc.start ]; then
+        		sh /etc/rc.start
+		fi
+	fi
+##debug_Aaron on 10/04/2007 for minix configuration
+else
+	mkdir /mnt/minix
+	mount -t minix /dev/mtdblock5 /mnt/minix
+        if [ $? != 0 ]; then
+		mkfs.minix /dev/mtdblock5
+		mount -t minix /dev/mtdblock5 /mnt/minix
+		if [ $? != 0 ]; then
+			echo "Mount /dev/mtdblock5 with minix failed!!!"
+		else
+			echo "Mount /dev/mtdblock5 with minix OK!!!"
+		fi	
+	else
+		echo "Mount /dev/mtdblock5 with minix OK!!!"
+	fi
+	rm -rf /usr/sausalito/codb
+        mkdir /mnt/minix/codb
+	cd /usr/sausalito
+	ln -s /mnt/minix/codb codb
+fi
+
+sh /etc/rc.network_install_version
+
+
+##debug_Aaron on 04/11/2005, support RTL8169 gigabit NIC
+##charles_TU, 11/14/2005, for linux 2.6
+uname -r | grep "2.6"
+if [ $? = 0 ]; then
+	if [ -e /lib/modules/r8169.ko ]; then
+	      insmod /lib/modules/r8169.ko
+	fi
+else
+	if [ -e /lib/modules/r8169.o ]; then
+	      insmod /lib/modules/r8169.o
+	fi
+fi
+
+##debug_Aaron on 03/11/2005, for libiconv.so.2
+if [ -e /usr/hddapp/lib/samba/libiconv.so.2 ]; then
+	ln -s /usr/hddapp/lib/samba/libiconv.so.2  /usr/lib/libiconv.so.2
+fi
+
+##debug_Aaron on 03/21/2006, for libid3tag.so.0.2.0
+if [ -e /usr/hddapp/lib/libid3tag.so.0.2.0 ]; then
+	ln -s /usr/hddapp/lib/libid3tag.so.0.2.0 /usr/lib/libid3tag.so.0
+fi
+
+##debug_Aaron on 01/25/2007, for libgdbm.so.3
+if [ -e /usr/hddapp/lib/libgdbm.so.3 ]; then
+        ln -s /usr/hddapp/lib/libgdbm.so.3 /usr/lib/libgdbm.so.3
+fi
+
+##debug_Aaron on 01/25/2007, for mt-daapd.conf 
+if [ -e /usr/hddapp/etc/mt-daapd.conf ]; then
+        ln -s /usr/hddapp/etc/mt-daapd.conf /etc/mt-daapd.conf
+fi
+
+# wait for mnt no busy
+echo "Umount tmpfs..."
+sleep 2
+umount -f /tmpmnt
+
+##debug_Aaron on 11/16/2004, must before udhcpc is started
+/sbin/ifconfig eth0 up
+if [ -x /usr/sausalito/sbin/cced ]; then
+    if [ ! -e /system/ImageInfo ]; then 
+	        rm -rf /usr/sausalito/conf/base/nfs
+	        rm -rf /usr/sausalito/conf/base/samba
+	        rm -rf /usr/susalito/conf/base/printer
+          if [ $NETWORK_INSTALL_VERSION != "YES" ]; then	        
+	            rm -rf /usr/sausalito/conf/base/ftp
+	            rm -rf /usr/sausalito/constructor/*ftp
+	        fi
+	        rm -rf /usr/sausalito/conf/base/casgle
+          rm -rf /usr/sausalito/constructor/*nfs
+          rm -rf /usr/sausalito/constructor/*samba
+          rm -rf /usr/sausalito/constructor/*printer
+	        rm -rf /usr/sausalito/constructor/*foldershare
+	        rm -rf /usr/sausalito/constructor/*casgle
+    fi	
+
+    ##charles_TU, 11/14/2005, for linux 2.6
+    uname -r | grep "2.6"
+    if [ $? = 0 ]; then
+	      if [ -e /lib/modules/rt2561ap.ko ]; then	
+            		/sbin/insmod /lib/modules/rt2561ap.ko
+	      fi
+	      if [ -e /lib/modules/rt2860ap.ko ]; then
+            		/sbin/insmod /lib/modules/rt2860ap.ko
+       	      fi
+	      if [ -e /lib/modules/rt2880_iNIC.ko ]; then
+		        /sbin/insmod /lib/modules/rt2880_iNIC.ko 
+	      fi		
+    else
+	      if [ -e /lib/modules/rt2561ap.o ]; then	
+        	  /sbin/insmod /lib/modules/rt2561ap.o
+	      fi
+    fi
+    
+    if [ "${UseCodbFlash}" = "YES" ]; then              
+        rm -rf /usr/sausalito/codb
+        /usr/sausalito/bin/sys_init codb_load
+        if [ -e "/usr/sausalito/codb/codb_crc" ]; then
+            echo "codb is found"
+            #    /usr/sausalito/sbin/cced -nh                
+            #    /usr/sausalito/bin/sys_init codb_renew      
+            #    killall cced                                                 
+        fi                                            
+        /usr/sausalito/sbin/cced -codb_flash     
+    else                                       
+        /usr/sausalito/sbin/cced                 
+    fi
+
+    sleep 1
+    /usr/sausalito/bin/sys_init > /dev/null 2>&1
+    if [ -x /usr/sausalito/bin/hotplug ]; then
+        ln -sf /usr/sausalito/bin/hotplug  /sbin/hotplug    
+    fi
+
+# debug by vivian 2008/01/31 for swupdate
+#    MYPATH=`/usr/sausalito/bin/get_root_dir`/local/etc/rc.d   
+    MYPATH=/system/local/etc/rc.d   
+    if [ $? = 0 ]; then
+#        for i in `/usr/sausalito/bin/get_root_dir`/local/etc/rc.d/*.sh; do
+        for i in /system/local/etc/rc.d/*.sh; do
+          if [ -e $i ]; then
+              sh  $i
+          fi
+        done                          
+    fi
+fi
+
+##beck
+if [ ! -x /usr/sausalito/sbin/cced ]; then
+
+network_system="/etc/sysconfig/network"
+HOSTNAME=`grep -s ^HOSTNAME ${network_system} | awk -F = '{print $2}' | sed 's/ //g'`
+#
+# Set the host name
+#
+
+if [ -z "${HOSTNAME}" ]; then
+     HOSTNAME="${hostname:-nas.mydomain.com}"
+fi
+hostname ${HOSTNAME}
+echo -n "Hostname: "
+hostname
+
+CWD=`pwd`
+cd /etc/sysconfig/network-scripts
+
+network_interfaces=`ls ifcfg* | sed 's/^ifcfg-//g'`
+
+echo -n "Network interfaces: "
+for thisif in $network_interfaces;
+do
+	echo -n "$thisif "
+	ThisIfConf="/etc/sysconfig/network-scripts/ifcfg-${thisif}"
+	BOOTPROTO=`grep -s ^BOOTPROTO ${ThisIfConf} | awk -F = '{print $2}' | sed 's/ //g'`
+	if [ "${BOOTPROTO}" = "none" -o ${thisif} = "lo" ]; then
+		IPADDR=`grep -s ^IPADDR ${ThisIfConf} | awk -F = '{print $2}' | sed 's/ //g'`
+		NETMASK=`grep -s ^NETMASK ${ThisIfConf} | awk -F = '{print $2}' | sed 's/ //g'`
+		thisvalue="inet ${IPADDR} netmask ${NETMASK}"
+		eval \ifconfig_${thisif}='$thisvalue'
+		GATEWAY=`grep -s ^GATEWAY ${network_system} | awk -F = '{print $2}' | sed 's/ //g'`
+	else
+       	eval \ifconfig_${thisif}='dhcp'
+	fi
+done
+
+if [ -n "$GATEWAY" ]; then
+	defaultrouter=$GATEWAY
+fi
+
+echo 
+cd $CWD
+
+for PidDir in /var/run /etc/dhcpc;
+do
+	rm -rf ${PidDir}/*.pid
+done
+
+if [ -r /etc/rc.network -a "${networking}" = "yes" ]; then
+	. /etc/rc.network
+	start_network
+fi
+
+
+fi
+##beck
+
+
+if [ -r "/etc/sysctl.conf" ]; then
+	/sbin/sysctl -p /etc/sysctl.conf
+fi
+
+syslogd_enable="YES"
+case ${syslogd_enable} in
+[Yy][Ee][Ss])
+	# Transitional symlink (for the next couple of years :) until all
+	# binaries have had a chance to move towards /var/run/log.
+	if [ ! -L /dev/log ]; then
+		# might complain for r/o root f/s
+		ln -sf /var/run/log /dev/log
+	fi
+
+	rm -f /var/run/log
+	echo "Starting syslogd..."
+	${syslogd_program:-/sbin/syslogd} ${syslogd_flags}
+	;;
+esac
+
+
+if [ ! -x /usr/sausalito/sbin/cced ]; then
+    case ${ntpdate_enable} in
+    [Nn][Oo])
+	    ;;
+    *)
+	    echo "Starting ntpdate..."; ${ntpdate_program:-/usr/bin/ntpdate} ${ntpdate_flags}
+	    ;;
+    esac
+fi
+
+case ${inetd_enable} in
+[Nn][Oo])
+	;;
+*)
+	echo "Starting inetd..."; ${inetd_program:-/usr/sbin/inetd} ${inetd_flags}
+	;;
+esac
+
+case ${crond_enable} in
+[Nn][Oo])
+	;;
+*)
+	echo "Starting crond..."; ${crond_program:-/usr/sbin/crond} ${crond_flags}
+	;;
+esac
+
+echo
+
+##added by beckerh
+if [ `/bin/date +%Y` -lt 2007 ]; then
+/bin/date 010112002007
+fi
+if [  -x /usr/sausalito/sbin/cced ]; then
+    /usr/sausalito/bin/constructor
+    if [ -x /usr/sausalito/sbin/storudp ]; then
+       /usr/sausalito/sbin/storudp
+    fi
+fi
+
+if [ "${UseCodbFlash}" = "YES" ]; then             
+  if [ -x /usr/sausalito/sbin/cced ]; then       
+      killall cced                               
+      /usr/sausalito/sbin/cced -codb_flash -fw   
+  fi                                             
+fi
+
+#added by vivian
+if [  -x /usr/sausalito/sbin/cced ]; then
+    /usr/sausalito/handlers/base/power/powermgmt &
+
+##debug_Aaron on 11/12/2007, for BSP mode 
+else
+	mkdir -p /system/log
+	mkdir -p /system/var/log
+	mkdir -p /system/var/run
+fi
+
+if [ -r /etc/rc.local ]; then
+	echo -n 'Starting local daemons:'
+	sh /etc/rc.local
+	echo '.'
+fi
+
+echo -n 'Local package initialization:'
+
+if [ -x /usr/sausalito/sbin/cced ]; then
+    if [ -z "${local_startup}" ]; then
+	    local_startup="/etc/rc.d /usr/local/etc/rc.d"
+    fi
+else
+    if [ -z "${local_startup}" ]; then
+	    local_startup="/etc/rc.d  /usr/hddapp/etc/rc.d /usr/local/etc/rc.d"
+    fi
+fi
+
+slist=""
+for dir in ${local_startup}; do
+	if [ -d "${dir}" ]; then
+		for script in ${dir}/*.sh; do
+			slist="${slist} ${script}"
+		done
+	fi
+done
+
+for script in ${slist}; do
+	if [ -x "${script}" ]; then
+		${script} start
+	elif [ -f "${script}" -o -L "${script}" ]; then
+		echo -n " (skipping ${script##*/}, not executable)"
+	fi
+done
+
+if [ ! -x /usr/sausalito/sbin/cced ]; then
+	##debug_Aaron on 07/10/2008, GUI constructor will bring up by itself
+	if [ -x /sbin/upnpdevice ]; then
+       		/sbin/upnpdevice &
+	fi
+	##debug_Aaron on 11/16/2005, for Apple Bonjour
+	if [ -x /sbin/mDNSResponderPosix ]; then
+		/sbin/mDNSResponderPosix -n "Storlink NAS" -t _http._tcp -p 80 -b
+	fi
+
+	##debug_Aaron on 03/21/2006, for Apple iTune server
+        if [ -x /sbin/mDNSResponderPosix ]; then
+                /sbin/mDNSResponderPosix -n "Storlink iTune music box" -t _daap._tcp -p 3689 -b
+        fi
+
+	if [ -x /sbin/daapd ]; then
+		/sbin/daapd -c /usr/hddapp/etc/daapd.conf &
+	fi
+fi
+
+##debug_Aaron on 09/07/2007 change MTU size to adopt ADSL modem
+##debug_Aaron on 11/01/2007 Move this change to GUI since ifconfig eth0 down will 
+##                          cause static route entry lost
+##grep -i "ExtraVersion=\"n\"" /etc/ImageInfo
+##if [ $? = 0 ]; then
+##	ifconfig eth0 down
+##	ifconfig eth0 mtu 1480
+#3	ifconfig eth0 up
+##fi
+##grep -i "ExtraVersion=\"rn\"" /etc/ImageInfo
+##if [ $? = 0 ]; then
+##	ifconfig eth1 down
+##        ifconfig eth1 mtu 1480
+##	ifconfig eth1 up
+##fi
+
+echo '.'
+
+echo ''
+
+date
+
+exit 0

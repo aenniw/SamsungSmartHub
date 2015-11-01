@@ -1,0 +1,177 @@
+<html>
+<head>
+<TAG_VARSTART_CHARSET>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; ">
+<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="PUBLIC">
+<META HTTP-EQUIV="PRAGMA" CONTENT="CACHE">
+<meta http-equiv="Content-Type" content="text/html; charset={TAG_charset}">
+<TAG_VAREND_CHARSET>
+<link rel="StyleSheet" type="text/css" href="/css/storlib.css">
+</head>
+
+<body onload="preload()">
+<FORM name="formnow" method=POST action="/index.html" enctype="application/x-www-form-urlencoded" onSubmit="if (window.is_submit && is_submit==1) return false; is_submit=1; return true; ">
+  <p> 
+<script language="javascript">
+
+<TAG_VARSTART_TIME>
+var flag = {TAG_flag};
+//var time = {TAG_time} ;
+var time = 90000;
+<TAG_VAREND_TIME>
+
+var count=0;
+function clock()
+{
+  var min = Math.floor(count / 60);
+	var sec = count - min*60 ;
+	document.formnow.mm.value= min;
+	document.formnow.ss.value= sec;
+	count++;
+	setTimeout("clock()",1000);
+} 
+
+
+
+function Redirect()
+{
+  mimic_button('submit_button_login', '');
+
+  return true;
+}
+
+function PutEvent(timeout)
+{
+  setTimeout("Check()", timeout);
+}
+
+function Check()
+{
+  var img_url;
+  img_url = "http://"+document.location.host;
+  img_url = img_url.concat("/image/icon-s.gif");
+  tester = new Image();
+  dummy = new Date();
+  tester.onload = Redirect;
+  PutEvent(10000);
+  tester.src = img_url+"?"+dummy.getHours()+dummy.getMinutes()+dummy.getSeconds()+dummy.getMilliseconds();
+}
+
+function preload() 
+{
+  clock();
+ if (flag == 4) {
+     setTimeout("top.close();", time);
+   } //else
+     // loaded();
+}
+
+if (flag !=4)
+{
+  PutEvent(time);
+  var is_button_in_focus=false;
+  var browser_type=0;
+  var is_submit=0;
+  var ua = window.navigator.userAgent.toLowerCase();
+	
+  if (ua.indexOf('safari') != -1)
+      browser_type = 4;
+}
+
+function loaded()
+{
+	var inp;
+//	document.formnow.mimic_button_field.value="";
+//	document.anchors[0].focus();
+}
+
+function mimic_button(button_name, cgi)
+{
+	is_submit=1;
+	f=document.formnow;
+/*	
+	switch(cgi) {
+	case 0:
+		f.encoding="application/x-www-form-urlencoded";
+		f.action="login.cgi";
+		break;
+	case 1:
+		f.encoding="multipart/form-data";
+		f.action="upgrade.cgi";
+		break;
+	case 2:
+		f.encoding="multipart/form-data";
+		f.action="index.cgi";
+		break;
+	}
+*/	
+	//f.mimic_button_field.value = button_name;
+	
+	is_submit=0;
+	
+	if (browser_type == 4)
+	  setTimeout("f.submit();", 45000);  // for Safari browser
+	else
+	  f.submit();
+}
+</script>
+<TAG_VARSTART_RETURN>
+<img src="/image/Masthead.png" width="800" height="97">
+<table width="800" border="0" cellspacing="0" cellpadding="0">
+<tr><td width=13 nowrap>&nbsp;</td>
+	<td width=50 style="background-image: url(/image/tab_bg1.gif); repeat-x">&nbsp;</td>
+	<td width=100% style="background-image: url(/image/tab_bg1.gif); repeat-x">&nbsp;</td>
+	<td width=13 nowrap>&nbsp;</td>
+</tr>
+<tr height="300"><td colspan=6>&nbsp;</td></tr>
+<tr><td colspan="6" align="center">
+	<img border=0 src="/image/hourglass.gif" width="32" height="32"></td>
+</tr>
+<tr><td colspan="6" align="center"><B><font size="4" color="#000000"> 
+              
+<script language="javascript">
+if (flag ==1)
+	document.write("{TAG_ms_upgrading}");
+else if (flag ==2)
+	document.write("{TAG_ms_factoryResetting}");
+else if (flag ==3)
+	document.write("{TAG_ms_configRestoring}");
+else if (flag ==4)
+	document.write("{TAG_ms_shutdown}");
+else
+	document.write("{TAG_ms_reboot}");
+</script>
+              </font></B></td>
+</tr>
+
+<tr><td colspan="6" align="center">
+	<FONT size=2 color=#000000 face="Arial"><B> 
+       <script language="javascript">
+if (flag == 4)
+	document.write("{TAG_ms_browserClose}");
+else
+	document.write("{TAG_ms_pressLoginButton1} {TAG_ms_pressLoginButton2} {TAG_ms_pressLoginButton3}");
+</script>
+    </B></FONT></TD>
+</tr>
+<tr><TD colspan="6" align=CENTER>
+  <font color="#0080FF"  size="4">{TAG_ms_desc1}
+      <input type="text" size="2" name="mm" style="BORDER-BOTTOM: 0px solid; BORDER-LEFT: 0px solid; BORDER-RIGHT: 0px solid; BORDER-TOP: 0px solid; COLOR: #0066FF; FONT-FAMILY: 'MS Sans Serif', Geneva, sans-serif; FONT-SIZE: 12pt; PADDING-BOTTOM: 3px; PADDING-LEFT: 3px; PADDING-RIGHT: 3px; PADDING-TOP: 3px">{TAG_ms_min}
+      <input type="text" size="2" name="ss" style="BORDER-BOTTOM: 0px solid; BORDER-LEFT: 0px solid; BORDER-RIGHT: 0px solid; BORDER-TOP: 0px solid; COLOR: #0066FF; FONT-FAMILY: 'MS Sans Serif', Geneva, sans-serif; FONT-SIZE: 12pt; PADDING-BOTTOM: 3px; PADDING-LEFT: 3px; PADDING-RIGHT: 3px; PADDING-TOP: 3px">{TAG_ms_sec}
+  </font></TD>
+</TR>
+
+<TR><TD colspan="6" align="center">
+<script language="JavaScript">
+if (flag != 4)
+    document.write("<input class=\"button\" type=\"submit\" name=\"submit_button_login\" value=\"Login\">");
+</script>
+</TD>
+</TR>
+<TAG_VAREND_RETURN>
+</table>
+
+  
+</form>
+</body>
+</html>

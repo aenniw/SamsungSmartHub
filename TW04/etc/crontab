@@ -1,0 +1,2 @@
+#minute	hour	mday	month	wday	command
+12	5	*	*	0	/bin/rm -f /var/log/*.html

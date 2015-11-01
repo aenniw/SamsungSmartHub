@@ -1,0 +1,1 @@
+<item id="ddns" label="ft_ddns" description="" url="cgi/ddns/ddns.cgi" parent="network_service" order="16"/>
