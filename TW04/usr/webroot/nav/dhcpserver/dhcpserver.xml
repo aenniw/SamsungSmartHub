@@ -1,1 +1,0 @@
-<item id="dhcpserver" label="ft_dhcp" description="" url="cgi/dhcpserver/dhcpserver.cgi" parent="network_service" order="10"/>

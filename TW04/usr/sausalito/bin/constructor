@@ -1,8 +1,0 @@
-#!/bin/sh
-for i in /usr/sausalito/constructor/*; do
-    [ ! -f $i ] && continue
-    echo "Running constructor $i"
-    $i > /dev/null 2>&1
-done
-
-echo "Done"

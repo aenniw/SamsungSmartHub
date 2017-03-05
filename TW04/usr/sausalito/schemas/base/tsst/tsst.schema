@@ -1,9 +1,0 @@
-<class name="System" namespace="Tsst" version="1.0">
-  <property name="enabled" type="boolean" default="1" optional="true"/>
-</class>
-
-<class name="Tsst" namespace="" version="1.0">
-  <property name="targetname" type="scalar" default="iqn.2011-12.com.tsstk:storage.odd.sys" />
-</class>
-
-

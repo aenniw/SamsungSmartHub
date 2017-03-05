@@ -1,3 +1,0 @@
-/dev/ram0 / ext2 defaults  1  1
-none /proc proc defaults 0 0
-/dev/hda1 /volume1 auto defaults,usrquota,grpquota 0 0

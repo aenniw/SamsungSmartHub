@@ -1,0 +1,25 @@
+#!/bin/sh
+nfs_enable="NO"
+. /etc/rc.conf
+
+case $nfs_enable in
+[Yy][Ee][Ss])
+      ;;
+[Nn][Oo])
+      return 0
+      ;;
+*)
+      echo "Please set nfs_enable=\"Yes\" in /etc/rc.conf to start nfs service"
+      ;;
+esac
+
+if [ -n "`pidof rpc.nfsd`" ] ; then
+    killall rpc.nfsd 2>/dev/null
+fi
+if [ -n "`pidof rpc.mountd`" ] ; then
+    killall  rpc.mountd 2>/dev/null
+fi
+
+sleep 2
+/usr/bin/rpc.nfsd  -f /etc/exports
+/usr/bin/rpc.mountd  -f /etc/exports

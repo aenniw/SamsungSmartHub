@@ -1,2 +1,0 @@
-auth required /usr/sausalito/lib/security/pam_unix.so
-account required /usr/sausalito/lib/security/pam_unix.so
