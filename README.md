@@ -2,8 +2,17 @@
 
 Series of patches for [Samsung ODD](https://www.amazon.com/Samsung-SE-208BW-optical-SmartHub-streamer/dp/B007JUFLS0) based on [Topic](https://sites.google.com/site/tssthacks/home)
 
+These patches resolves some of issues of SE-208BW:
+
+    - missing auto-restart feature
+    - mount scripts cannot handle multiple USB drives throush USB-HUB
+        !!Note that if you connect multiple USBs via USB-HUB SE-208BW
+         will erase all files from already mounted drives!!
+    - config persistence as SE-208BW ocasionaly freezes and reboots into stock firmware
+    - missing nfsd
+
 Original firmwares [TW03](resources/SE-208BW_TW03.tar.gz)/[AW03](resources/SE-208BW_AW03.tar.gz),
-Recovery firmwares [TW03](resources/SE-208BWTW_image.bin)/[AW03-missing](resources/SE-208BWAW_image.bin)
+Recovery firmwares [TW03](resources/SE-208BWTW_image.bin)/[AW03](resources/SE-208BWAW_image.bin)
 
 Note that these binaries are no longer accessible on official Samsung sites.
 
