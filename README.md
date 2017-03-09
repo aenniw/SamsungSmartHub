@@ -24,7 +24,7 @@ The SE208BW won't accept a firmware file if you have added too many files in the
 ### Brick recovery
 Do not use the TW firmware if your device has pre-installed the AW firmware, and vice versa!
 
-1. Download on of [TW03](resources/SE-208BW_TW03.tar.gz)/[AW03](resources/SE-208BW_AW03.tar.gz) based on your device.
+1. Download on of [TW03](resources/SE-208BWTW_image.bin)/[AW03](resources/SE-208BWAW_image.bin) based on your device.
 2. Rename the downloaded file to 208BW_image.bin
 3. Connect pc directly to your SE208BW using Ethernet cable.
 4. Turn on your SE208BW while pressing the reset button with a pen as shown in image.
