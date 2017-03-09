@@ -57,9 +57,7 @@ tar -zxf ${FIRMWARE} -C ./${FIRMWARE_DIR}/firmware
 execute_step "Image extraction" "gunzip -c ${FIRMWARE_DIR}/firmware/rd.gz > ${FIRMWARE_DIR}/rd"
 rm ${FIRMWARE_DIR}/firmware/rd.gz
 execute_step "Image mount" sudo mount -o loop ${FIRMWARE_DIR}/rd ${FIRMWARE_DIR}/image
-## TODO remove for per file patching
 execute_step "Files patched" sudo cp -rf ./patches/* ${FIRMWARE_DIR}/image
-
 ## ImageInfo information
 read -e -p "Enter hostname: " -i "SmartHub" HOST_NAME
 read -e -p "Enter lan ip-address: " -i "192.168.208.1" LAN_IPADDR
@@ -70,20 +68,6 @@ read -e -p "Enter AP password: " -i "" AP_PASSWD
 read -e -p "Enter timezone: " -i "Seoul" TIME_ZONE
 read -e -p "Enter factory-reset enabled: " -i "0" FACTORY_RESET
 read -e -p "Enter version: " -i "${FIRMWARE_DIR#*SE-208BW_}" VERSION
-
-AP_SETTINGS_FILE="${FIRMWARE_DIR}/image/etc/Wireless/RT2860AP/RT2860AP.dat"
-sudo sed -i "/^SSID1=/ { s,=.*,=${AP_SSID}, }" ${AP_SETTINGS_FILE}
-sudo sed -i "/^AuthMode=/ { s,=.*,=${AP_AUTHMODE}, }" ${AP_SETTINGS_FILE}
-sudo sed -i "/^WPAPSK1=/ { s,=.*,=${AP_PASSWD}, }" ${AP_SETTINGS_FILE}
-
-for IMAGE_INFO_FILE in "${FIRMWARE_DIR}/firmware/ImageInfo" "${FIRMWARE_DIR}/image/etc/ImageInfo"; do
-    sed -i "/^hostname=/ { s,\".*\",\"${HOST_NAME}\", }" ${IMAGE_INFO_FILE}
-    sed -i "/^DEFAULT_LAN_IPADDR=/ { s,\".*\",\"${LAN_IPADDR}\", }" ${IMAGE_INFO_FILE}
-    sed -i "/^DEFAULT_LAN_NETMASK=/ { s,\".*\",\"${LAN_NETMASK}\", }" ${IMAGE_INFO_FILE}
-    sed -i "/^DEFAULT_TIME_ZONE=/ { s,\".*\",\"${TIME_ZONE}\", }" ${IMAGE_INFO_FILE}
-    sed -i "/^FACTORY_RESET_ADMIN=/ { s,\".*\",\"${FACTORY_RESET}\", }" ${IMAGE_INFO_FILE}
-    sed -i "/^softwareVersion=/ { s,\".*\",\"${VERSION}\", }" ${IMAGE_INFO_FILE}
-done
 ## Device information
 read -e -p "INETD enable: " -i "Yes" INETD_ENABLE
 read -e -p "CROND enable: " -i "Yes" CROND_ENABLE
@@ -96,8 +80,26 @@ read -e -p "Use ramdisk enable: " -i "YES" RAM_ENABLE
 read -e -p "HD boot enable: " -i "NO" HD_BOOT_ENABLE
 read -e -p "Save codb: " -i "YES" CODB_ENABLE
 read -e -p "Router mode: " -i "NO" ROUTER_ENABLE
-
+## write all changes to image
+AP_SETTINGS_FILE="${FIRMWARE_DIR}/image/etc/Wireless/RT2860AP/RT2860AP.dat"
 RC_CONF_FILE="${FIRMWARE_DIR}/image/etc/rc.conf"
+sed -i "/^SSID1=/ { s,=.*,=${AP_SSID}, }" ${AP_SETTINGS_FILE}
+sed -i "/^WIFI_SSID=/ { s,\".*\",\"${AP_SSID}\", }" ${RC_CONF_FILE}
+sed -i "/^AuthMode=/ { s,=.*,=${AP_AUTHMODE}, }" ${AP_SETTINGS_FILE}
+sed -i "/^WIFI_AUTH_MODE=/ { s,\".*\",\"${AP_AUTHMODE}\", }" ${RC_CONF_FILE}
+sed -i "/^WPAPSK1=/ { s,=.*,=${AP_PASSWD}, }" ${AP_SETTINGS_FILE}
+sed -i "/^WIFI_PASSWD=/ { s,\".*\",\"${AP_PASSWD}\", }" ${RC_CONF_FILE}
+sed -i "/^LAN_IPADDR=/ { s,\".*\",\"${LAN_IPADDR}\", }" ${RC_CONF_FILE}
+sed -i "/^LAN_NETMASK=/ { s,\".*\",\"${LAN_NETMASK}\", }" ${RC_CONF_FILE}
+sed -i "/^NTP_TIME_ZONE=/ { s,\".*\",\"${TIME_ZONE}\", }" ${RC_CONF_FILE}
+for IMAGE_INFO_FILE in "${FIRMWARE_DIR}/firmware/ImageInfo" "${FIRMWARE_DIR}/image/etc/ImageInfo"; do
+    sed -i "/^hostname=/ { s,\".*\",\"${HOST_NAME}\", }" ${IMAGE_INFO_FILE}
+    sed -i "/^DEFAULT_LAN_IPADDR=/ { s,\".*\",\"${LAN_IPADDR}\", }" ${IMAGE_INFO_FILE}
+    sed -i "/^DEFAULT_LAN_NETMASK=/ { s,\".*\",\"${LAN_NETMASK}\", }" ${IMAGE_INFO_FILE}
+    sed -i "/^DEFAULT_TIME_ZONE=/ { s,\".*\",\"${TIME_ZONE}\", }" ${IMAGE_INFO_FILE}
+    sed -i "/^FACTORY_RESET_ADMIN=/ { s,\".*\",\"${FACTORY_RESET}\", }" ${IMAGE_INFO_FILE}
+    sed -i "/^softwareVersion=/ { s,\".*\",\"${VERSION}\", }" ${IMAGE_INFO_FILE}
+done
 sed -i "/^inetd_enable=/ { s,\".*\",\"${INETD_ENABLE}\", }" ${RC_CONF_FILE}
 sed -i "/^crond_enable=/ { s,\".*\",\"${CROND_ENABLE}\", }" ${RC_CONF_FILE}
 sed -i "/^ntpdate_enable=/ { s,\".*\",\"${NTP_ENABLE}\", }" ${RC_CONF_FILE}

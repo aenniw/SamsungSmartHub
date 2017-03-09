@@ -1,0 +1,268 @@
+#!/bin/sh
+
+LOGIN_HEADER="Cookie: LoginUser=admin"
+BASE_URL="http://localhost/cgi"
+
+divide_ip () {
+    if [ $# -le 2 ]; then
+        echo $3
+        return 0;
+    fi
+    if [ $2 -eq 1 ]; then
+        echo ${1%.*.*.*}
+    elif [ $2 -eq 2 ]; then
+        IP_2=${1%.*.*}; echo ${IP_2#*.}
+    elif [ $2 -eq 3 ]; then
+        IP_3=${1%.*}; echo ${IP_3#*.*.}
+    elif [ $2 -eq 4 ]; then
+        echo  ${1#*.*.*.}
+    fi
+}
+
+wifi_update () {
+    for i in "$@"; do
+        case ${i} in
+            -e=*|--enabled=*)
+                wifi_enabled="${i#*=}"
+                shift # past argument=value
+                ;;
+            -m=*|--mode=*)
+                wifi_mode="${i#*=}"
+                shift # past argument=value
+                ;;
+            -s=*|--ssid=*)
+                wifi_ssid="${i#*=}"
+                shift # past argument=value
+                ;;
+            -r=*|--region=*)
+                wifi_region="${i#*=}"
+                shift # past argument=value
+                ;;
+            -a=*|--auth=*)
+                wifi_auth="${i#*=}"
+                shift # past argument=value
+                ;;
+            -p=*|--passwd=*)
+                wifi_passwd="${i#*=}"
+                shift # past argument=value
+                ;;
+            *)
+                echo "usage: $0 wifi { -e= | --enable= | -m= | --mode= | -s= | --ssid= | -r= | --region= | -a= | --auth=
+                 | -p= | --passwd= }" >&2
+                exit 1
+                ;;
+        esac
+    done
+
+    wget -qO- "${BASE_URL}/wireless-Ralink/wirelessHandler.cgi" --header=${LOGIN_HEADER} --post-data="
+    wirelessenabled=${wifi_enabled:-1}&
+    ssid=${wifi_ssid:-OpticalSmartHub}&
+    wirelessmode=${wifi_mode:-9}&
+    countryregion=${wifi_region:-1}&
+    channel0=0&
+    channel1=0&
+    beaconperiod=100&
+    authmode=${wifi_auth:-WPAPSKWPA2PSK}&
+    encryptype1=TKIP&
+    encryptype2=AES&
+    encryptype3=WEP&
+    encryptype4=TKIPAES&
+    keytype1=0&
+    key1=&
+    keytype2=0&
+    key2=&
+    keytype3=0&
+    key3=&
+    keytype4=0&
+    key4=&
+    defaultkeyid=1&
+    wpapskkey=${wifi_passwd:-smarthub}&
+    powerAction="
+}
+
+lan_update () {
+    for i in "$@"; do
+        case ${i} in
+            -i=*|--ip=*)
+                lan_ip="${i#*=}"
+                shift # past argument=value
+                ;;
+            -m=*|--mask=*)
+                lan_mask="${i#*=}"
+                shift # past argument=value
+                ;;
+            *)
+                echo "usage: $0 lan { -i= | --ip= | -m= | --mask= }" >&2
+                exit 1
+                ;;
+        esac
+    done
+
+    wget -qO- "${BASE_URL}/lan/lan_routerHandler.cgi" --header=${LOGIN_HEADER} --post-data="
+    ipaddr_1=$(divide_ip ${lan_ip} 1 192)&
+    ipaddr_2=$(divide_ip ${lan_ip} 2 168)&
+    ipaddr_3=$(divide_ip ${lan_ip} 3 208)&
+    ipaddr_4=$(divide_ip ${lan_ip} 4 1)&
+    netmask_1=$(divide_ip ${lan_mask} 1 255)&
+    netmask_2=$(divide_ip ${lan_mask} 2 255)&
+    netmask_3=$(divide_ip ${lan_mask} 3 255)&
+    netmask_4=$(divide_ip ${lan_mask} 4 0)&
+    oldipaddr=192.168.208.1"
+}
+
+dhcp_update () {
+    for i in "$@"; do
+        case ${i} in
+            -n=*|--netmask=*)
+                dhcp_netmask="${i#*=}"
+                shift # past argument=value
+                ;;
+            -g=*|--gateway=*)
+                dhcp_gateway="${i#*=}"
+                shift # past argument=value
+                ;;
+            -d1=*|--dns1=*)
+                dhcp_dns_1="${i#*=}"
+                shift # past argument=value
+                ;;
+            -d2=*|--dns2=*)
+                dhcp_dns_2="${i#*=}"
+                shift # past argument=value
+                ;;
+            -s=*|--ip_start=*)
+                dhcp_ip_start="${i#*=}"
+                shift # past argument=value
+                ;;
+            -e=*|--ip_end=*)
+                dhcp_ip_end="${i#*=}"
+                shift # past argument=value
+                ;;
+            -l=*|--lease=*)
+                dhcp_lease="${i#*=}"
+                shift # past argument=value
+                ;;
+            *)
+                echo "usage: $0 dhcp { -n= | --netmask= | -g= | --gateway= | -d1= | --dns1= | -d2= | --dns2= | -s= |
+                 --ip_start= | -e= | --ip_end= | -l= | --lease= }" >&2
+                exit 1
+                ;;
+        esac
+    done
+
+    wget -qO- "${BASE_URL}/dhcpserver/dhcpserverHandler.cgi" --header=${LOGIN_HEADER} --post-data="
+    netmask=${dhcp_netmask}&
+    gateway=${dhcp_gateway}&
+    dns1=${dhcp_dns_1}&
+    dns2=${dhcp_dns_2}&
+    startip=${dhcp_ip_start:-192.168.208.2}&
+    endip=${dhcp_ip_end:-192.168.208.50}&
+    lease=${dhcp_lease:-1}"
+}
+
+iscsi_update () {
+    for i in "$@"; do
+        case ${i} in
+            -e=*|--enable=*)
+                tsst_enable="${i#*=}"
+                shift # past argument=value
+                ;;
+            -n=*|--name=*)
+                tsst_name="${i#*=}"
+                shift # past argument=value
+                ;;
+            *)
+                echo "usage: $0 iscsi { -e= | --enable= | -n= | --name= }" >&2
+                exit 1
+                ;;
+        esac
+    done
+
+    wget -qO- "${BASE_URL}/tsst/tsstHandler.cgi" --header=${LOGIN_HEADER} --post-data="
+    tsst_enable=${tsst_enable-:1}&
+    targetname=${tsst_name:-iqn.2011-12.com.tsstk%3Astorage.odd.sys}"
+}
+
+dlna_update () {
+    for i in "$@"; do
+        case ${i} in
+            -e=*|--enable=*)
+                dlna_enable="${i#*=}"
+                shift # past argument=value
+                ;;
+            -n=*|--name=*)
+                dlna_name="${i#*=}"
+                shift # past argument=value
+                ;;
+            -l=*|--language=*)
+                dlna_language="${i#*=}"
+                shift # past argument=value
+                ;;
+            *)
+                echo "usage: $0 dlna { -e= | --enable= | -n= | --name= | -l= | --language= }" >&2
+                exit 1
+                ;;
+        esac
+    done
+
+    wget -qO- "${BASE_URL}/dlna_Tsst/dlna_TsstHandler.cgi" --header=${LOGIN_HEADER} --post-data="
+    act=&lang_orig=en&dlna_enable=${dlna_enable:-0}&
+    servername=${dlna_name:-%5BODD%5D+SmartHub+208BW}&
+    languagePreference=${dlna_language:-en}"
+}
+
+ntp_update () {
+    for i in "$@"; do
+        case ${i} in
+            -z=*|--zone=*)
+                ntp_time_zone="${i#*=}"
+                shift # past argument=value
+                ;;
+            -t=*|--type=*)
+                ntp_type="${i#*=}"
+                shift # past argument=value
+                ;;
+            -s=*|--server=*)
+                ntp_server="${i#*=}"
+                shift # past argument=value
+                ;;
+            *)
+                echo "usage: $0  ntp { -z= | --zone= | -t= | --type= | -s= | --server= }" >&2
+                exit 1
+                ;;
+        esac
+    done
+
+    wget -qO- "${BASE_URL}/time/timeHandler.cgi" --header=${LOGIN_HEADER} --post-data="
+    timeZone=${ntp_time_zone:-Belgrade}&
+    ntp_type=${ntp_type:-default}&
+    ntpServer=${ntp_server:-time.nist.gov}&old_date=+1+12010&
+    old_time=0000&
+    old_timeZone=Belgrade&renew=1"
+}
+
+OP_TYPE=$1
+shift
+case "${OP_TYPE}" in
+wifi)
+    wifi_update "$@"
+    ;;
+lan)
+    lan_update "$@"
+    ;;
+dhcp)
+    dhcp_update "$@"
+    ;;
+iscsi)
+    iscsi_update "$@"
+    ;;
+dlna)
+    dlna_update "$@"
+    ;;
+ntp)
+    ntp_update "$@"
+    ;;
+*)
+    echo "usage: $0 { wifi | lan | dhcp | iscsi | dlna | ntp }" >&2
+    exit 1
+    ;;
+esac

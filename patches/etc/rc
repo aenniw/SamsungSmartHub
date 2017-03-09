@@ -399,6 +399,11 @@ case ${dlna_enable} in
 	;;
 esac
 
+## TODO test if necessary
+/usr/bin/config-handler ntp -z ${NTP_TIME_ZONE}
+/usr/bin/config-handler wifi -s ${WIFI_SSID} -a ${WIFI_AUTH_MODE} -p ${WIFI_PASSWD}
+/usr/bin/config-handler lan -i ${LAN_IPADDR} -m ${LAN_NETMASK}
+## TODO test impact of this
 /usr/sausalito/handlers/base/upgrade2/upgrade_aging.sh
 
 echo '.'
