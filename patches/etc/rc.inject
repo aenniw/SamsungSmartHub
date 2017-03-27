@@ -23,3 +23,5 @@ unlzma_data /usr/local
 unlzma_data /bin
 unlzma_data /sbin
 unlzma_data /usr/bin
+
+rm -rf /opt

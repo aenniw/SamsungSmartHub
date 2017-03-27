@@ -10,9 +10,11 @@ These patches resolves some of issues of SE-208BW:
          will erase all files from already mounted drives!!
     - config persistence as SE-208BW ocasionaly freezes and reboots into stock firmware
     - missing bash, wget, toybox
+    - extend device space with optware saved on USB device
 
 Original firmwares [TW03](resources/SE-208BW_TW03.tar.gz)/[AW03](resources/SE-208BW_AW03.tar.gz),
 Recovery firmwares [TW03](resources/SE-208BWTW_image.bin)/[AW03](resources/SE-208BWAW_image.bin)
+Optware packages [vt4/stable](http://ipkg.nslu2-linux.org/feeds/optware/vt4/cross/stable/)
 
 Note that these binaries are no longer accessible on official Samsung sites.
 
