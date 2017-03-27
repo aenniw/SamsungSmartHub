@@ -38,7 +38,30 @@ function execute_step {
         cleanup
         exit 1
     fi
-}
+};
+
+shrinker () {
+    if [ $# -eq 2 ]; then
+        for f in $1/* ;do
+            if [ -d ${f} ]; then
+                shrinker ${f} $2
+            else
+                case "$2" in
+                -c | --compress )
+                    test -f $f && echo $f | grep -q -v ".lzma" && sudo lzma $f
+                    ;;
+                -d | --decompress )
+                    test -f $f && echo $f | grep -q ".lzma" && sudo unlzma $f
+                    ;;
+                *)
+                    echo "usage: $0 { -c | --compress | -d | --decompress } path" >&2
+                    exit 1
+                    ;;
+                esac
+            fi
+        done
+    fi
+};
 
 sudo echo "Sudo permissions granted" || exit 1
 
@@ -57,65 +80,18 @@ tar -zxf ${FIRMWARE} -C ./${FIRMWARE_DIR}/firmware
 execute_step "Image extraction" "gunzip -c ${FIRMWARE_DIR}/firmware/rd.gz > ${FIRMWARE_DIR}/rd"
 rm ${FIRMWARE_DIR}/firmware/rd.gz
 execute_step "Image mount" sudo mount -o loop ${FIRMWARE_DIR}/rd ${FIRMWARE_DIR}/image
-execute_step "Files patched" sudo cp -rf ./patches/* ${FIRMWARE_DIR}/image
-## ImageInfo information
-read -e -p "Enter hostname: " -i "SmartHub" HOST_NAME
-read -e -p "Enter lan ip-address: " -i "192.168.208.1" LAN_IPADDR
-read -e -p "Enter lan net-mask: " -i "255.255.255.0" LAN_NETMASK
-read -e -p "Enter AP SSID: " -i "OpticalSmartHub" AP_SSID
-read -e -p "Enter AP AuthMode: " -i "OPEN" AP_AUTHMODE
-read -e -p "Enter AP password: " -i "" AP_PASSWD
-read -e -p "Enter timezone: " -i "Seoul" TIME_ZONE
-read -e -p "Enter factory-reset enabled: " -i "0" FACTORY_RESET
-read -e -p "Enter version: " -i "${FIRMWARE_DIR#*SE-208BW_}" VERSION
-## Device information
-read -e -p "INETD enable: " -i "Yes" INETD_ENABLE
-read -e -p "CROND enable: " -i "Yes" CROND_ENABLE
-read -e -p "NTP enable: " -i "Yes" NTP_ENABLE
-read -e -p "DLNA enable: " -i "No" DLNA_ENABLE
-read -e -p "SMB enable: " -i "YES" SMB_ENABLE
-## read -e -p "NFS enable: " -i "YES" NFS_ENABLE
-read -e -p "FTP enable: " -i "YES" FTP_ENABLE
-read -e -p "Use ramdisk enable: " -i "YES" RAM_ENABLE
-read -e -p "HD boot enable: " -i "NO" HD_BOOT_ENABLE
-read -e -p "Save codb: " -i "YES" CODB_ENABLE
-read -e -p "Router mode: " -i "NO" ROUTER_ENABLE
-## write all changes to image
-AP_SETTINGS_FILE="${FIRMWARE_DIR}/image/etc/Wireless/RT2860AP/RT2860AP.dat"
-RC_CONF_FILE="${FIRMWARE_DIR}/image/etc/rc.conf"
-sed -i "/^SSID1=/ { s,=.*,=${AP_SSID}, }" ${AP_SETTINGS_FILE}
-sed -i "/^WIFI_SSID=/ { s,\".*\",\"${AP_SSID}\", }" ${RC_CONF_FILE}
-sed -i "/^AuthMode=/ { s,=.*,=${AP_AUTHMODE}, }" ${AP_SETTINGS_FILE}
-sed -i "/^WIFI_AUTH_MODE=/ { s,\".*\",\"${AP_AUTHMODE}\", }" ${RC_CONF_FILE}
-sed -i "/^WPAPSK1=/ { s,=.*,=${AP_PASSWD}, }" ${AP_SETTINGS_FILE}
-sed -i "/^WIFI_PASSWD=/ { s,\".*\",\"${AP_PASSWD}\", }" ${RC_CONF_FILE}
-sed -i "/^LAN_IPADDR=/ { s,\".*\",\"${LAN_IPADDR}\", }" ${RC_CONF_FILE}
-sed -i "/^LAN_NETMASK=/ { s,\".*\",\"${LAN_NETMASK}\", }" ${RC_CONF_FILE}
-sed -i "/^NTP_TIME_ZONE=/ { s,\".*\",\"${TIME_ZONE}\", }" ${RC_CONF_FILE}
-for IMAGE_INFO_FILE in "${FIRMWARE_DIR}/firmware/ImageInfo" "${FIRMWARE_DIR}/image/etc/ImageInfo"; do
-    sed -i "/^hostname=/ { s,\".*\",\"${HOST_NAME}\", }" ${IMAGE_INFO_FILE}
-    sed -i "/^DEFAULT_LAN_IPADDR=/ { s,\".*\",\"${LAN_IPADDR}\", }" ${IMAGE_INFO_FILE}
-    sed -i "/^DEFAULT_LAN_NETMASK=/ { s,\".*\",\"${LAN_NETMASK}\", }" ${IMAGE_INFO_FILE}
-    sed -i "/^DEFAULT_TIME_ZONE=/ { s,\".*\",\"${TIME_ZONE}\", }" ${IMAGE_INFO_FILE}
-    sed -i "/^FACTORY_RESET_ADMIN=/ { s,\".*\",\"${FACTORY_RESET}\", }" ${IMAGE_INFO_FILE}
-    sed -i "/^softwareVersion=/ { s,\".*\",\"${VERSION}\", }" ${IMAGE_INFO_FILE}
-done
-sed -i "/^inetd_enable=/ { s,\".*\",\"${INETD_ENABLE}\", }" ${RC_CONF_FILE}
-sed -i "/^crond_enable=/ { s,\".*\",\"${CROND_ENABLE}\", }" ${RC_CONF_FILE}
-sed -i "/^ntpdate_enable=/ { s,\".*\",\"${NTP_ENABLE}\", }" ${RC_CONF_FILE}
-sed -i "/^samba_enable=/ { s,\".*\",\"${SMB_ENABLE}\", }" ${RC_CONF_FILE}
-## sed -i "/^nfs_enable=/ { s,\".*\",\"${NFS_ENABLE}\", }" ${RC_CONF_FILE}
-sed -i "/^ftp_enable=/ { s,\".*\",\"${FTP_ENABLE}\", }" ${RC_CONF_FILE}
-sed -i "/^dlna_enable=/ { s,\".*\",\"${DLNA_ENABLE}\", }" ${RC_CONF_FILE}
-sed -i "/^UseRamDisk=/ { s,\".*\",\"${RAM_ENABLE}\", }" ${RC_CONF_FILE}
-sed -i "/^HardDiskBootUp=/ { s,\".*\",\"${HD_BOOT_ENABLE}\", }" ${RC_CONF_FILE}
-sed -i "/^UseCodbFlash=/ { s,\".*\",\"${CODB_ENABLE}\", }" ${RC_CONF_FILE}
-sed -i "/^RouterOnly=/ { s,\".*\",\"${ROUTER_ENABLE}\", }" ${RC_CONF_FILE}
-## Striping scripts comments
-sudo sed -i -f ./strip-scripts.sed $(egrep -lir  "(#!/bin/sh)" ${FIRMWARE_DIR}/image/ 2>>/dev/null)
+execute_step "Patches copied" sudo cp -rf ./patches/* ${FIRMWARE_DIR}/image
+execute_step "RC patched" sudo sed -i "20r${FIRMWARE_DIR}/image/etc/rc.inject" ${FIRMWARE_DIR}/image/etc/rc && sudo rm ${FIRMWARE_DIR}/image/etc/rc.inject
+execute_step "Comprimed /usr/local" shrinker ${FIRMWARE_DIR}/image/usr/local -c
+mkdir -p ${FIRMWARE_DIR}/tmp
+cp -r ./image/* ${FIRMWARE_DIR}/tmp
+execute_step "Comprimed /bin" shrinker ${FIRMWARE_DIR}/tmp/bin -c
+execute_step "Comprimed /usr" shrinker ${FIRMWARE_DIR}/tmp/usr -c
+execute_step "Binaries copied" sudo cp -rf ${FIRMWARE_DIR}/tmp/* ${FIRMWARE_DIR}/image/
+rm -rf ${FIRMWARE_DIR}/tmp/
 execute_step "Image un-mount" sudo umount ${FIRMWARE_DIR}/image
 ## Zeroing empty blocks for better compression rate
 zerofree ${FIRMWARE_DIR}/rd
 execute_step "Image build" "gzip -9 -c ${FIRMWARE_DIR}/rd > ${FIRMWARE_DIR}/firmware/rd.gz "
-execute_step "Firmware patched" tar -czf patched_firmware.tar.gz -C ./${FIRMWARE_DIR}/firmware zImage ImageInfo rd.gz
+execute_step "Firmware patched" tar -czf SE-208BW_${VERSION:-TW03}.tar.gz -C ./${FIRMWARE_DIR}/firmware zImage ImageInfo rd.gz
 cleanup

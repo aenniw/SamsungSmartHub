@@ -1,7 +1,5 @@
 #!/bin/sh
-
-LOGIN_HEADER="Cookie: LoginUser=admin"
-BASE_URL="http://localhost/cgi"
+BASE_URL="http://localhost:8080/cgi"
 
 divide_ip () {
     if [ $# -le 2 ]; then
@@ -54,30 +52,7 @@ wifi_update () {
         esac
     done
 
-    wget -qO- "${BASE_URL}/wireless-Ralink/wirelessHandler.cgi" --header=${LOGIN_HEADER} --post-data="
-    wirelessenabled=${wifi_enabled:-1}&
-    ssid=${wifi_ssid:-OpticalSmartHub}&
-    wirelessmode=${wifi_mode:-9}&
-    countryregion=${wifi_region:-1}&
-    channel0=0&
-    channel1=0&
-    beaconperiod=100&
-    authmode=${wifi_auth:-WPAPSKWPA2PSK}&
-    encryptype1=TKIP&
-    encryptype2=AES&
-    encryptype3=WEP&
-    encryptype4=TKIPAES&
-    keytype1=0&
-    key1=&
-    keytype2=0&
-    key2=&
-    keytype3=0&
-    key3=&
-    keytype4=0&
-    key4=&
-    defaultkeyid=1&
-    wpapskkey=${wifi_passwd:-smarthub}&
-    powerAction="
+    wget -qO- "${BASE_URL}/wireless-Ralink/wirelessHandler.cgi" --post-data="wirelessenabled=${wifi_enabled:-1}&ssid=${wifi_ssid:-OpticalSmartHub}&wirelessmode=${wifi_mode:-9}&countryregion=${wifi_region:-1}&channel0=0&channel1=0&beaconperiod=100&authmode=${wifi_auth:-WPAPSKWPA2PSK}&encryptype1=TKIP&encryptype2=AES&encryptype3=WEP&encryptype4=TKIPAES&keytype1=0&key1=&keytype2=0&key2=&keytype3=0&key3=&keytype4=0&key4=&defaultkeyid=1&wpapskkey=${wifi_passwd:-smarthub}&powerAction=" &> /dev/null
 }
 
 lan_update () {
@@ -98,16 +73,7 @@ lan_update () {
         esac
     done
 
-    wget -qO- "${BASE_URL}/lan/lan_routerHandler.cgi" --header=${LOGIN_HEADER} --post-data="
-    ipaddr_1=$(divide_ip ${lan_ip} 1 192)&
-    ipaddr_2=$(divide_ip ${lan_ip} 2 168)&
-    ipaddr_3=$(divide_ip ${lan_ip} 3 208)&
-    ipaddr_4=$(divide_ip ${lan_ip} 4 1)&
-    netmask_1=$(divide_ip ${lan_mask} 1 255)&
-    netmask_2=$(divide_ip ${lan_mask} 2 255)&
-    netmask_3=$(divide_ip ${lan_mask} 3 255)&
-    netmask_4=$(divide_ip ${lan_mask} 4 0)&
-    oldipaddr=192.168.208.1"
+    wget -qO- "${BASE_URL}/lan/lan_routerHandler.cgi" --post-data="ipaddr_1=$(divide_ip ${lan_ip} 1 192)&ipaddr_2=$(divide_ip ${lan_ip} 2 168)&ipaddr_3=$(divide_ip ${lan_ip} 3 208)&ipaddr_4=$(divide_ip ${lan_ip} 4 1)&netmask_1=$(divide_ip ${lan_mask} 1 255)&netmask_2=$(divide_ip ${lan_mask} 2 255)&netmask_3=$(divide_ip ${lan_mask} 3 255)&netmask_4=$(divide_ip ${lan_mask} 4 0)&oldipaddr=192.168.208.1" &> /dev/null
 }
 
 dhcp_update () {
@@ -149,14 +115,7 @@ dhcp_update () {
         esac
     done
 
-    wget -qO- "${BASE_URL}/dhcpserver/dhcpserverHandler.cgi" --header=${LOGIN_HEADER} --post-data="
-    netmask=${dhcp_netmask}&
-    gateway=${dhcp_gateway}&
-    dns1=${dhcp_dns_1}&
-    dns2=${dhcp_dns_2}&
-    startip=${dhcp_ip_start:-192.168.208.2}&
-    endip=${dhcp_ip_end:-192.168.208.50}&
-    lease=${dhcp_lease:-1}"
+    wget -qO- "${BASE_URL}/dhcpserver/dhcpserverHandler.cgi" --post-data="netmask=${dhcp_netmask}&gateway=${dhcp_gateway}&dns1=${dhcp_dns_1}&dns2=${dhcp_dns_2}&startip=${dhcp_ip_start:-192.168.208.2}&endip=${dhcp_ip_end:-192.168.208.50}&lease=${dhcp_lease:-1}" &> /dev/null
 }
 
 iscsi_update () {
@@ -177,9 +136,7 @@ iscsi_update () {
         esac
     done
 
-    wget -qO- "${BASE_URL}/tsst/tsstHandler.cgi" --header=${LOGIN_HEADER} --post-data="
-    tsst_enable=${tsst_enable-:1}&
-    targetname=${tsst_name:-iqn.2011-12.com.tsstk%3Astorage.odd.sys}"
+    wget -qO- "${BASE_URL}/tsst/tsstHandler.cgi" --post-data="tsst_enable=${tsst_enable-:1}&targetname=${tsst_name:-iqn.2011-12.com.tsstk%3Astorage.odd.sys}" &> /dev/null
 }
 
 dlna_update () {
@@ -204,10 +161,7 @@ dlna_update () {
         esac
     done
 
-    wget -qO- "${BASE_URL}/dlna_Tsst/dlna_TsstHandler.cgi" --header=${LOGIN_HEADER} --post-data="
-    act=&lang_orig=en&dlna_enable=${dlna_enable:-0}&
-    servername=${dlna_name:-%5BODD%5D+SmartHub+208BW}&
-    languagePreference=${dlna_language:-en}"
+    wget -qO- "${BASE_URL}/dlna_Tsst/dlna_TsstHandler.cgi" --post-data="act=&lang_orig=en&dlna_enable=${dlna_enable:-0}&servername=${dlna_name:-%5BODD%5D+SmartHub+208BW}&languagePreference=${dlna_language:-en}" &> /dev/null
 }
 
 ntp_update () {
@@ -232,16 +186,14 @@ ntp_update () {
         esac
     done
 
-    wget -qO- "${BASE_URL}/time/timeHandler.cgi" --header=${LOGIN_HEADER} --post-data="
-    timeZone=${ntp_time_zone:-Belgrade}&
-    ntp_type=${ntp_type:-default}&
-    ntpServer=${ntp_server:-time.nist.gov}&old_date=+1+12010&
-    old_time=0000&
-    old_timeZone=Belgrade&renew=1"
+
+    wget -qO- "${BASE_URL}/time/timeHandler.cgi" --post-data="timeZone=${ntp_time_zone:-Belgrade}&ntp_type=${ntp_type:-default}&ntpServer=${ntp_server:-time.nist.gov}&old_date=12212010&old_time=1947old_timeZone=Belgrade&renew=1" &> /dev/null
 }
 
 OP_TYPE=$1
-shift
+if [ ! -z $1 ]; then
+    shift
+fi
 case "${OP_TYPE}" in
 wifi)
     wifi_update "$@"

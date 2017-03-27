@@ -13,7 +13,7 @@ do_mount()
 {
 	DISK_DEVICE_NUM=$1
 	MOUNT_POINT=$2
-	
+
 	echo "### $DISK_DEVICE_NUM ---> $MOUNT_POINT ###"
 	mkdir -p $MOUNT_POINT
 	chmod -R 777 $MOUNT_POINT
@@ -25,22 +25,22 @@ do_mount()
 	ret_val5=0
 
 	dd if=$DISK_DEVICE_NUM of=/tmp/out.fat32 count=1
-        
+
 	grep $FAT32_ID1 /tmp/out.fat32
 	ret_val1=$?
-        
+
 	grep $FAT32_ID2 /tmp/out.fat32
 	ret_val2=$?
-        
+
 	grep $FAT32_ID3 /tmp/out.fat32
 	ret_val3=$?
 
 	grep $FAT32_ID4 /tmp/out.fat32
 	ret_val4=$?
-       
+
 	grep $NTFS_ID1 /tmp/out.fat32
 	ret_val5=$?
-        
+
 
 	if [ $ret_val1 = 0 -o $ret_val2 = 0 -o $ret_val3 = 0 -o $ret_val4 = 0 ]; then
     	echo "$DISK_DEVICE_NUM is FAT32"
@@ -50,7 +50,7 @@ do_mount()
     	echo "$DISK_DEVICE_NUM is NTFS"
 		#mount -t ufsd -o umask=0000,dmask=0000,fmask=0000,sparse,force $DISK_DEVICE_NUM $MOUNT_POINT
 		mount -t ufsd -o umask=0002,dmask=0002,fmask=0002,sparse,force,gid=100 $DISK_DEVICE_NUM $MOUNT_POINT
-	else            
+	else
     	echo "$device is not FAT32"
 	    mount -t auto $DISK_DEVICE_NUM $MOUNT_POINT
 	fi
@@ -58,7 +58,7 @@ do_mount()
 	if [ $? != 0 ]; then
 		echo "mount $DISK_DEVICE_NUM failed !!!"
 		 [ "$(ls -A $MOUNT_POINT)" ] || rm -rf $MOUNT_POINT
-	
+
 		#T120308.sg - for smartbackup
 		echo "0" > /tmp/sbd/is_disk_on
 		return 1
@@ -82,8 +82,8 @@ echo $LABEL;
 
 post_mount(){
     ln -s $1 "/mnt/$2";
-    /etc/scripts/link-media-files.sh -a $1
-    /etc/scripts/smb-share.sh -a $1
+    test -x /etc/scripts/link-media-files.sh && /etc/scripts/link-media-files.sh -a $1
+    test -x /etc/scripts/smb-share.sh && /etc/scripts/smb-share.sh -a $1
 };
 
 #######################################################################################
@@ -116,4 +116,3 @@ fi
 /usr/sausalito/handlers/base/usb_disk/usbs_usage.sh >/tmp/usbs_usage
 
 exit 0
-

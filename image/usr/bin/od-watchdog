@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 MOUNT_CALLBACK="/usr/bin/cm-client 192.168.43.2:4567 mountCD.sh"
 UNMOUNT_CALLBACK="/usr/bin/cm-client 192.168.43.2:4567 umountCD.sh"
@@ -11,10 +11,10 @@ if (( ${#files} )); then
 		${MOUNT_CALLBACK} && touch /tmp/__mounted
 	else
 		${RECHECK_CALLBACK} || rm /tmp/__mounted
-	fi;	
+	fi;
 else
 	if [ -f /tmp/__mounted ]; then
 		${UNMOUNT_CALLBACK} && rm /tmp/__mounted
-	fi; 
+	fi;
 fi;
 sleep 5 && $0 &

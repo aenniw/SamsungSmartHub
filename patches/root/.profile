@@ -1,5 +1,4 @@
-#/etc/profile: system-wide .profile file for ash.
-PATH="$PATH:/bin:/sbin:/usr/bin:/usr/sbin:/usr/syno/bin:/usr/syno/sbin:/usr/local/bin:/usr/local/sbin:/opt/bin:/opt/sbin:/opt/usr/bin:/opt/usr/sbin:"
+PATH="$PATH:/bin:/sbin:/usr/bin:/usr/sbin:/usr/syno/bin:/usr/syno/sbin:/usr/local/bin:/usr/local/sbin:/opt/bin"
 umask 022
 #This fixes the backspace when telnetting in.
 #if [ "$TERM" != "linux" ]; then
@@ -18,4 +17,3 @@ alias dir="ls -al"
 #debug_Aaron on 10/05/2006 for rtorrent
 export COLUMNS=111
 export LINES=35
-

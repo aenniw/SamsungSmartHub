@@ -1,0 +1,25 @@
+
+PATH="${PATH}:/opt/bin"
+
+if [ -f /xz.tar.gz ]; then
+    cd /
+    tar -xzf xz.tar.gz && rm xz.tar.gz
+    cd $OLDPWD
+fi
+
+unlzma_data () {
+    if [ $# -eq 1 ]; then
+        for f in $1/* ;do
+            if [ -d ${f} ]; then
+                unlzma_data ${f}
+            else
+                test -f $f && echo $f | grep -q ".lzma" && unlzma -f $f
+            fi
+        done
+    fi
+}
+
+unlzma_data /usr/local
+unlzma_data /bin
+unlzma_data /sbin
+unlzma_data /usr/bin
