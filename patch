@@ -81,7 +81,9 @@ execute_step "Image extraction" "gunzip -c ${FIRMWARE_DIR}/firmware/rd.gz > ${FI
 rm ${FIRMWARE_DIR}/firmware/rd.gz
 execute_step "Image mount" sudo mount -o loop ${FIRMWARE_DIR}/rd ${FIRMWARE_DIR}/image
 execute_step "Patches copied" sudo cp -rf ./patches/* ${FIRMWARE_DIR}/image
-execute_step "RC patched" sudo sed -i "20r${FIRMWARE_DIR}/image/etc/rc.inject" ${FIRMWARE_DIR}/image/etc/rc && sudo rm ${FIRMWARE_DIR}/image/etc/rc.inject
+execute_step "RC.begin patched" sudo sed -i "20r${FIRMWARE_DIR}/image/etc/rc.begin" ${FIRMWARE_DIR}/image/etc/rc && sudo rm ${FIRMWARE_DIR}/image/etc/rc.begin
+RC_END=$(( $(cat ${FIRMWARE_DIR}/image/etc/rc | wc -l) - 1 ))
+execute_step "RC.end patched" sudo sed -i "${RC_END}r${FIRMWARE_DIR}/image/etc/rc.end" ${FIRMWARE_DIR}/image/etc/rc && sudo rm ${FIRMWARE_DIR}/image/etc/rc.end
 execute_step "Comprimed /usr/local" shrinker ${FIRMWARE_DIR}/image/usr/local -c
 mkdir -p ${FIRMWARE_DIR}/tmp
 cp -r ./image/* ${FIRMWARE_DIR}/tmp
