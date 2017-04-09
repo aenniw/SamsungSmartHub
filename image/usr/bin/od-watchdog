@@ -1,20 +1,21 @@
 #!/bin/bash
 
-MOUNT_CALLBACK="/usr/bin/cm-client 192.168.43.2:4567 mountCD.sh"
-UNMOUNT_CALLBACK="/usr/bin/cm-client 192.168.43.2:4567 umountCD.sh"
-RECHECK_CALLBACK="/bin/ping -c 1  192.168.43.2"
+MOUNT_CALLBACK="cm-client 192.168.43.2:4567 mountCD.sh"
+UNMOUNT_CALLBACK="cm-client 192.168.43.2:4567 umountCD.sh"
+RECHECK_CALLBACK="ping -q -c 1  192.168.43.2"
 
+killall cm-client
 test -d /mnt/cdrom || mkdir /mnt/cdrom
 files=$(shopt -s nullglob dotglob; echo /mnt/cdrom/*)
 if (( ${#files} )); then
 	if [ ! -f /tmp/__mounted ]; then
-		${MOUNT_CALLBACK} && touch /tmp/__mounted
+		${MOUNT_CALLBACK} && touch /tmp/__mounted &
 	else
 		${RECHECK_CALLBACK} || rm /tmp/__mounted
 	fi;
 else
 	if [ -f /tmp/__mounted ]; then
-		${UNMOUNT_CALLBACK} && rm /tmp/__mounted
+		${UNMOUNT_CALLBACK} && rm /tmp/__mounted &
 	fi;
 fi;
 sleep 5 && $0 &
